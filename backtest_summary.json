@@ -1,0 +1,22 @@
+{
+  "symbol": "ETH/USDT",
+  "timeframe": "5m",
+  "days": 300,
+  "initial_balance": 1000.0,
+  "final_balance": 1000.0,
+  "total_pnl": 0.0,
+  "total_pnl_pct": 0.0,
+  "total_trades": 0,
+  "closed_trades": 0,
+  "wins": 0,
+  "losses": 0,
+  "win_rate": 0,
+  "avg_rr": 0,
+  "profit_factor": Infinity,
+  "expectancy": 0.0,
+  "max_drawdown": 0.0,
+  "sharpe_ratio": 0,
+  "equity_curve": [
+    1000.0
+  ]
+}
