@@ -1,203 +1,214 @@
 {
   "open_trades": [
     {
-      "symbol": "BNB/USDT",
-      "direction": "long",
-      "entry_price": 618.89,
-      "sl_price": 617.77642,
-      "tp_prices": [
-        622.83
-      ],
-      "qty": 1.594441,
-      "risk_amount": 1.09,
-      "opened_at": "2026-04-29T17:05:23.619454+00:00",
-      "status": "open",
-      "order_ids": [
-        "1350732433",
-        "1000000061211128",
-        "1350732445"
-      ],
-      "current_sl": 617.77642,
-      "be_moved": false,
-      "partial_done": false,
-      "qty_remaining": 1.594441,
-      "sl_order_id": "1000000061211128",
-      "tp_order_id": "1350732445",
-      "partial_pnl": 0.0,
-      "fvg": {
-        "symbol": "BNB/USDT",
-        "timeframe": "5m",
-        "direction": "bullish",
-        "gap_high": 618.81,
-        "gap_low": 618.11,
-        "sl_price": 617.77642,
-        "formed_at": "2026-04-29T17:05:00+00:00",
-        "formed_index": 99,
-        "status": "retested",
-        "entry_price": null,
-        "candles_since_formed": 0,
-        "last_candle_time": "2026-04-29T17:05:00+00:00",
-        "score": 0.317
-      }
-    },
-    {
       "symbol": "ETH/USDT",
       "direction": "long",
-      "entry_price": 2274.43501,
-      "sl_price": 2265.19687,
+      "entry_price": 2263.84,
+      "sl_price": 2256.778554,
       "tp_prices": [
         2324.42
       ],
-      "qty": 0.417316,
-      "risk_amount": 1.43,
-      "opened_at": "2026-04-29T17:05:49.360230+00:00",
+      "qty": 0.418203,
+      "risk_amount": 1.46,
+      "opened_at": "2026-04-30T14:58:28.927627+00:00",
       "status": "open",
       "order_ids": [
-        "8673193196",
-        "1000000061211433",
-        "8673193204"
+        "8674898703",
+        "1000000062149767",
+        "8674898708"
       ],
-      "current_sl": 2265.19687,
+      "current_sl": 2256.778554,
       "be_moved": false,
       "partial_done": false,
-      "qty_remaining": 0.417316,
-      "sl_order_id": "1000000061211433",
-      "tp_order_id": "8673193204",
+      "qty_remaining": 0.418203,
+      "sl_order_id": "1000000062149767",
+      "tp_order_id": "8674898708",
       "partial_pnl": 0.0,
       "fvg": {
         "symbol": "ETH/USDT",
         "timeframe": "5m",
         "direction": "bullish",
-        "gap_high": 2270.04,
-        "gap_low": 2267.23,
-        "sl_price": 2265.19687,
-        "formed_at": "2026-04-29T17:05:00+00:00",
-        "formed_index": 99,
+        "gap_high": 2262.74,
+        "gap_low": 2257.81,
+        "sl_price": 2256.778554,
+        "formed_at": "2026-04-30T14:50:00+00:00",
+        "formed_index": 97,
         "status": "retested",
         "entry_price": null,
         "candles_since_formed": 0,
-        "last_candle_time": "2026-04-29T17:05:00+00:00",
-        "score": 0.155
+        "last_candle_time": "2026-04-30T15:00:00+00:00",
+        "score": 0.566
+      }
+    },
+    {
+      "symbol": "SOL/USDT",
+      "direction": "long",
+      "entry_price": 83.66,
+      "sl_price": 83.03339,
+      "tp_prices": [
+        84.66
+      ],
+      "qty": 11.353183,
+      "risk_amount": 1.21,
+      "opened_at": "2026-04-30T15:31:29.871977+00:00",
+      "status": "open",
+      "order_ids": [
+        "1862037273",
+        "1000000062170671",
+        "1862037281"
+      ],
+      "current_sl": 83.03339,
+      "be_moved": false,
+      "partial_done": false,
+      "qty_remaining": 11.353183,
+      "sl_order_id": "1000000062170671",
+      "tp_order_id": "1862037281",
+      "partial_pnl": 0.0,
+      "fvg": {
+        "symbol": "SOL/USDT",
+        "timeframe": "5m",
+        "direction": "bullish",
+        "gap_high": 83.2,
+        "gap_low": 83.08,
+        "sl_price": 83.03339,
+        "formed_at": "2026-04-30T14:50:00+00:00",
+        "formed_index": 99,
+        "status": "retested",
+        "entry_price": null,
+        "candles_since_formed": 9,
+        "last_candle_time": "2026-04-30T15:30:00+00:00",
+        "score": 0.328
+      }
+    },
+    {
+      "symbol": "XRP/USDT",
+      "direction": "short",
+      "entry_price": 1.3673,
+      "sl_price": 1.36967388,
+      "tp_prices": [
+        1.3629
+      ],
+      "qty": 662.027492,
+      "risk_amount": 1.04,
+      "opened_at": "2026-04-30T16:17:05.999548+00:00",
+      "status": "open",
+      "order_ids": [
+        "1619337928",
+        "1000000062198906",
+        "1619337935"
+      ],
+      "current_sl": 1.36967388,
+      "be_moved": false,
+      "partial_done": false,
+      "qty_remaining": 662.027492,
+      "sl_order_id": "1000000062198906",
+      "tp_order_id": "1619337935",
+      "partial_pnl": 0.0,
+      "fvg": {
+        "symbol": "XRP/USDT",
+        "timeframe": "5m",
+        "direction": "bearish",
+        "gap_high": 1.3692,
+        "gap_low": 1.367,
+        "sl_price": 1.36967388,
+        "formed_at": "2026-04-30T13:30:00+00:00",
+        "formed_index": 66,
+        "status": "retested",
+        "entry_price": null,
+        "candles_since_formed": 0,
+        "last_candle_time": "2026-04-30T16:15:00+00:00",
+        "score": 0.665
       }
     }
   ],
   "active_fvgs": {
-    "SOL/USDT": [
-      {
-        "symbol": "SOL/USDT",
-        "timeframe": "5m",
-        "direction": "bearish",
-        "gap_high": 83.4,
-        "gap_low": 83.21,
-        "sl_price": 83.46669,
-        "formed_at": "2026-04-29T15:40:00+00:00",
-        "formed_index": 84,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 12,
-        "last_candle_time": "2026-04-29T17:45:00+00:00",
-        "score": 0.416
-      },
-      {
-        "symbol": "SOL/USDT",
-        "timeframe": "5m",
-        "direction": "bearish",
-        "gap_high": 83.72,
-        "gap_low": 83.55,
-        "sl_price": 83.83676399999999,
-        "formed_at": "2026-04-29T15:05:00+00:00",
-        "formed_index": 77,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 12,
-        "last_candle_time": "2026-04-29T17:45:00+00:00",
-        "score": 0.52
-      }
-    ],
-    "BNB/USDT": [
-      {
-        "symbol": "BNB/USDT",
-        "timeframe": "5m",
-        "direction": "bullish",
-        "gap_high": 619.87,
-        "gap_low": 619.15,
-        "sl_price": 618.606254,
-        "formed_at": "2026-04-29T17:25:00+00:00",
-        "formed_index": 99,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 4,
-        "last_candle_time": "2026-04-29T17:45:00+00:00",
-        "score": 0.243
-      },
-      {
-        "symbol": "BNB/USDT",
-        "timeframe": "5m",
-        "direction": "bearish",
-        "gap_high": 623.56,
-        "gap_low": 622.85,
-        "sl_price": 628.945764,
-        "formed_at": "2026-04-29T13:30:00+00:00",
-        "formed_index": 58,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 11,
-        "last_candle_time": "2026-04-29T17:45:00+00:00",
-        "score": 0.075
-      },
-      {
-        "symbol": "BNB/USDT",
-        "timeframe": "5m",
-        "direction": "bearish",
-        "gap_high": 625.6,
-        "gap_low": 623.59,
-        "sl_price": 628.935762,
-        "formed_at": "2026-04-29T12:25:00+00:00",
-        "formed_index": 45,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 11,
-        "last_candle_time": "2026-04-29T17:45:00+00:00",
-        "score": 0.208
-      }
-    ],
+    "SOL/USDT": [],
+    "BNB/USDT": [],
     "ETH/USDT": [
       {
         "symbol": "ETH/USDT",
         "timeframe": "5m",
         "direction": "bullish",
-        "gap_high": 2274.44,
-        "gap_low": 2270.24,
-        "sl_price": 2268.3862320000003,
-        "formed_at": "2026-04-29T17:25:00+00:00",
-        "formed_index": 99,
+        "gap_high": 2262.74,
+        "gap_low": 2257.81,
+        "sl_price": 2256.778554,
+        "formed_at": "2026-04-30T14:50:00+00:00",
+        "formed_index": 91,
         "status": "waiting",
         "entry_price": null,
-        "candles_since_formed": 4,
-        "last_candle_time": "2026-04-29T17:45:00+00:00",
-        "score": 0.26
+        "candles_since_formed": 9,
+        "last_candle_time": "2026-04-30T16:15:00+00:00",
+        "score": 0.57
       },
       {
         "symbol": "ETH/USDT",
         "timeframe": "5m",
-        "direction": "bearish",
-        "gap_high": 2317.0,
-        "gap_low": 2311.0,
-        "sl_price": 2329.4658,
-        "formed_at": "2026-04-29T16:30:00+00:00",
-        "formed_index": 92,
+        "direction": "bullish",
+        "gap_high": 2262.01,
+        "gap_low": 2257.79,
+        "sl_price": 2255.138882,
+        "formed_at": "2026-04-30T13:40:00+00:00",
+        "formed_index": 83,
         "status": "waiting",
         "entry_price": null,
-        "candles_since_formed": 8,
-        "last_candle_time": "2026-04-29T17:45:00+00:00",
-        "score": 0.475
+        "candles_since_formed": 16,
+        "last_candle_time": "2026-04-30T16:15:00+00:00",
+        "score": 0.453
+      },
+      {
+        "symbol": "ETH/USDT",
+        "timeframe": "5m",
+        "direction": "bullish",
+        "gap_high": 2265.65,
+        "gap_low": 2261.39,
+        "sl_price": 2260.7677559999997,
+        "formed_at": "2026-04-30T12:25:00+00:00",
+        "formed_index": 62,
+        "status": "waiting",
+        "entry_price": null,
+        "candles_since_formed": 9,
+        "last_candle_time": "2026-04-30T16:15:00+00:00",
+        "score": 0.463
+      }
+    ],
+    "XRP/USDT": [
+      {
+        "symbol": "XRP/USDT",
+        "timeframe": "5m",
+        "direction": "bearish",
+        "gap_high": 1.3686,
+        "gap_low": 1.3665,
+        "sl_price": 1.36967388,
+        "formed_at": "2026-04-30T14:15:00+00:00",
+        "formed_index": 75,
+        "status": "waiting",
+        "entry_price": null,
+        "candles_since_formed": 0,
+        "last_candle_time": "2026-04-30T16:15:00+00:00",
+        "score": 0.442
+      },
+      {
+        "symbol": "XRP/USDT",
+        "timeframe": "5m",
+        "direction": "bearish",
+        "gap_high": 1.3692,
+        "gap_low": 1.367,
+        "sl_price": 1.36967388,
+        "formed_at": "2026-04-30T13:30:00+00:00",
+        "formed_index": 66,
+        "status": "retested",
+        "entry_price": null,
+        "candles_since_formed": 0,
+        "last_candle_time": "2026-04-30T16:15:00+00:00",
+        "score": 0.665
       }
     ]
   },
   "trades_today": {
-    "BNB/USDT": 3,
-    "ETH/USDT": 6,
-    "SOL/USDT": 4
+    "SOL/USDT": 3,
+    "BNB/USDT": 2,
+    "ETH/USDT": 5,
+    "XRP/USDT": 1
   },
-  "last_trade_date": "2026-04-29"
+  "last_trade_date": "2026-04-30"
 }

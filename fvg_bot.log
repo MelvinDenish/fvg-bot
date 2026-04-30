@@ -5177,3 +5177,544 @@ KeyError: 'high'
 2026-04-29 23:01:07  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[82.8300-83.0100] | SL=83.0766 | score=0.35 | invalidated)
 2026-04-29 23:08:30  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$-2.19
 2026-04-29 23:16:38  WARNING   Network error fetching balance (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v3/account?timestamp=1777484798458&recvWindow=15000&signature=05caaae8cf48d556092785f4dea71d9f0fb8e48777dfebca81279ed8493edf87
+2026-04-29 23:41:37  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-29 23:41:37  INFO      Restored 2 open trade(s) from bot_state.json
+2026-04-29 23:41:44  INFO      Reconciled 2 stale trade(s) at startup: ['BNB/USDT', 'ETH/USDT'] (positions already closed on exchange — P&L unknown, set to 0)
+2026-04-29 23:41:45  INFO      ============================================================
+2026-04-29 23:41:45  INFO        FVG Trading Bot starting up
+2026-04-29 23:41:45  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-29 23:41:45  INFO        TP mode:   STRUCTURE
+2026-04-29 23:41:45  INFO        Symbols:   ETH/USDT, SOL/USDT, BNB/USDT
+2026-04-29 23:41:45  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-29 23:41:45  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-29 23:41:45  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-29 23:41:45  INFO      ============================================================
+2026-04-29 23:41:45  INFO      Bot loop started
+2026-04-29 23:41:46  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2245.1500-2274.4300] | SL=2275.8351 | score=0.71 | waiting)
+2026-04-29 23:41:46  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2245.1500-2274.4300] | SL=2275.8351 | score=0.71 | invalidated)
+2026-04-29 23:41:46  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:41:46  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:41:47  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:41:47  WARNING   SKIPPED ETH/USDT: market price 2240.1500 has drifted 3.19% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:41:57  WARNING   Network error fetching SOL/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=SOLUSDT
+2026-04-29 23:42:08  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.1700-82.9600] | SL=83.0366 | score=0.97 | waiting)
+2026-04-29 23:42:08  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.9100-83.0100] | SL=83.0766 | score=0.34 | waiting)
+2026-04-29 23:42:08  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[83.9900-84.1700] | SL=84.1968 | score=0.47 | waiting)
+2026-04-29 23:42:08  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.1600-84.3000] | SL=84.4069 | score=0.23 | waiting)
+2026-04-29 23:42:08  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.4000-84.5600] | SL=84.6269 | score=0.38 | waiting)
+2026-04-29 23:42:08  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.6600-84.8600] | SL=84.8970 | score=0.47 | waiting)
+2026-04-29 23:42:09  INFO      FVG invalidated: FVG(BNB/USDT 5m BULLISH | gap=[619.1500-619.8700] | SL=618.6063 | score=0.24 | invalidated)
+2026-04-29 23:42:25  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2270.2400-2274.4400] | SL=2268.3862 | score=0.26 | invalidated)
+2026-04-29 23:42:35  WARNING   Network error fetching SOL/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=SOLUSDT
+2026-04-29 23:42:56  WARNING   Network error fetching SOL/USDT 5m (attempt 2/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=SOLUSDT
+2026-04-29 23:43:10  WARNING   Network error fetching SOL/USDT 5m (attempt 3/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=SOLUSDT
+2026-04-29 23:43:25  WARNING   Network error fetching SOL/USDT 1m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=1m&limit=10&symbol=SOLUSDT
+2026-04-29 23:43:26  WARNING   Network error fetching SOL/USDT 1m (attempt 2/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=1m&limit=10&symbol=SOLUSDT
+2026-04-29 23:43:28  WARNING   Network error fetching SOL/USDT 1m (attempt 3/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=1m&limit=10&symbol=SOLUSDT
+2026-04-29 23:43:32  WARNING   Network error fetching BNB/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=BNBUSDT
+2026-04-29 23:43:33  WARNING   Network error fetching BNB/USDT 5m (attempt 2/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=BNBUSDT
+2026-04-29 23:43:35  WARNING   Network error fetching BNB/USDT 5m (attempt 3/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=BNBUSDT
+2026-04-29 23:43:57  WARNING   Network error fetching BNB/USDT 1m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=1m&limit=10&symbol=BNBUSDT
+2026-04-29 23:43:59  INFO      FVG invalidated: FVG(BNB/USDT 5m BULLISH | gap=[619.1500-619.8700] | SL=618.6063 | score=0.24 | invalidated)
+2026-04-29 23:44:11  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-29 23:44:14  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[82.1700-82.9600] | SL=83.0366 | score=0.97 | invalidated)
+2026-04-29 23:44:14  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[82.9100-83.0100] | SL=83.0766 | score=0.34 | invalidated)
+2026-04-29 23:44:24  WARNING   Network error fetching BNB/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=BNBUSDT
+2026-04-29 23:45:21  WARNING   Network error fetching ETH/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=ETHUSDT
+2026-04-29 23:45:35  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[81.9600-82.0800] | SL=82.1864 | score=0.14 | waiting)
+2026-04-29 23:45:35  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[81.9600-82.0800] | SL=82.1864 | score=0.14 | invalidated)
+2026-04-29 23:46:05  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2240.1400-2243.5500] | SL=2275.8851 | score=0.06 | waiting)
+2026-04-29 23:46:05  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2240.1400-2243.5500] | SL=2275.8851 | score=0.06 | invalidated)
+2026-04-29 23:46:05  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:46:05  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:46:06  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:46:06  WARNING   SKIPPED ETH/USDT: market price 2240.0800 has drifted 3.19% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:47:45  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:47:46  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:47:46  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:47:46  WARNING   SKIPPED ETH/USDT: market price 2240.1600 has drifted 3.19% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:48:34  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:48:34  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:48:34  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:48:36  WARNING   SKIPPED ETH/USDT: market price 2240.2900 has drifted 3.19% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:49:46  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:49:46  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:49:47  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:49:47  WARNING   SKIPPED ETH/USDT: market price 2234.5600 has drifted 3.43% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:50:23  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:50:24  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:50:24  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:50:24  WARNING   SKIPPED ETH/USDT: market price 2234.7600 has drifted 3.42% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:50:47  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:50:47  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:50:47  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:50:47  WARNING   SKIPPED ETH/USDT: market price 2234.0000 has drifted 3.46% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:51:10  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:51:10  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:51:10  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:51:10  WARNING   SKIPPED ETH/USDT: market price 2234.9000 has drifted 3.42% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:51:44  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:51:44  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:51:44  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:51:44  WARNING   SKIPPED ETH/USDT: market price 2240.4100 has drifted 3.18% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:53:02  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:53:02  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:53:02  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:53:02  WARNING   SKIPPED ETH/USDT: market price 2237.9400 has drifted 3.29% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:53:14  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:53:14  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:53:14  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:53:14  WARNING   SKIPPED ETH/USDT: market price 2238.5600 has drifted 3.26% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:53:50  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:53:50  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:53:50  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:53:50  WARNING   SKIPPED ETH/USDT: market price 2240.5400 has drifted 3.17% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:54:02  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:54:02  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:54:02  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:54:02  WARNING   SKIPPED ETH/USDT: market price 2238.3400 has drifted 3.27% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:54:35  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:54:36  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:54:36  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:54:36  WARNING   SKIPPED ETH/USDT: market price 2238.6400 has drifted 3.26% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:55:12  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:55:12  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:55:12  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:55:13  WARNING   SKIPPED ETH/USDT: market price 2239.4800 has drifted 3.22% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:56:11  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:56:11  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:56:12  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:56:12  WARNING   SKIPPED ETH/USDT: market price 2237.6500 has drifted 3.30% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:56:34  INFO      SUMMARY | Closed=2 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-29 23:56:45  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:56:45  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:56:45  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:56:45  WARNING   SKIPPED ETH/USDT: market price 2238.9900 has drifted 3.24% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:57:08  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:57:08  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:57:08  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:57:08  WARNING   SKIPPED ETH/USDT: market price 2237.4000 has drifted 3.31% from FVG entry 2314.0000. Not placing order.
+2026-04-29 23:59:19  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-29 23:59:20  INFO      Leverage set to 5x on ETH/USDT
+2026-04-29 23:59:20  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-29 23:59:21  WARNING   SKIPPED ETH/USDT: market price 2232.8200 has drifted 3.51% from FVG entry 2314.0000. Not placing order.
+2026-04-30 00:00:11  INFO      Daily trade counters reset
+2026-04-30 00:01:16  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 00:01:16  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 00:01:16  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 00:01:16  WARNING   SKIPPED ETH/USDT: market price 2236.0000 has drifted 3.37% from FVG entry 2314.0000. Not placing order.
+2026-04-30 00:02:24  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 00:02:24  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 00:02:25  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 00:02:25  WARNING   SKIPPED ETH/USDT: market price 2234.8400 has drifted 3.42% from FVG entry 2314.0000. Not placing order.
+2026-04-30 00:02:48  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 00:02:48  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 00:02:49  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 00:02:49  WARNING   SKIPPED ETH/USDT: market price 2226.9300 has drifted 3.76% from FVG entry 2314.0000. Not placing order.
+2026-04-30 00:03:01  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 00:03:01  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 00:03:01  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 00:03:01  WARNING   SKIPPED ETH/USDT: market price 2226.2500 has drifted 3.79% from FVG entry 2314.0000. Not placing order.
+2026-04-30 00:03:33  WARNING   Network error fetching SOL/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=SOLUSDT
+2026-04-30 00:03:52  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 00:03:52  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 00:03:52  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 00:03:52  WARNING   SKIPPED ETH/USDT: market price 2236.2500 has drifted 3.36% from FVG entry 2314.0000. Not placing order.
+2026-04-30 00:04:00  INFO      Shutdown signal received — stopping bot...
+2026-04-30 00:04:03  INFO      Bot stopped cleanly
+2026-04-30 00:04:03  INFO      SUMMARY | Closed=2 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 00:04:07  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-30 00:04:20  WARNING   Orphan cleanup: fetch_open_orders(ETH/USDT) failed: binance GET https://demo-fapi.binance.com/fapi/v1/exchangeInfo
+2026-04-30 00:04:27  INFO      ============================================================
+2026-04-30 00:04:27  INFO        FVG Trading Bot starting up
+2026-04-30 00:04:27  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-30 00:04:27  INFO        TP mode:   STRUCTURE
+2026-04-30 00:04:27  INFO        Symbols:   ETH/USDT, SOL/USDT, BNB/USDT
+2026-04-30 00:04:27  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-30 00:04:27  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-30 00:04:27  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-30 00:04:27  INFO      ============================================================
+2026-04-30 00:04:27  INFO      Bot loop started
+2026-04-30 00:04:28  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2240.3000-2243.5500] | SL=2275.8851 | score=0.25 | waiting)
+2026-04-30 00:04:28  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2240.3000-2243.5500] | SL=2275.8851 | score=0.25 | invalidated)
+2026-04-30 00:04:28  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.6300-84.7300] | SL=84.5531 | score=0.43 | waiting)
+2026-04-30 00:04:28  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.5600-84.6800] | SL=84.7069 | score=0.59 | waiting)
+2026-04-30 00:04:28  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.6200-84.7100] | SL=84.5431 | score=0.49 | waiting)
+2026-04-30 00:04:28  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.2100-84.3700] | SL=84.1632 | score=0.79 | waiting)
+2026-04-30 00:04:28  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.9400-84.0700] | SL=83.8832 | score=0.57 | waiting)
+2026-04-30 00:04:28  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.8800-84.0100] | SL=83.7932 | score=0.64 | waiting)
+2026-04-30 00:04:29  INFO      FVG invalidated: FVG(SOL/USDT 5m BULLISH | gap=[84.6300-84.7300] | SL=84.5531 | score=0.43 | invalidated)
+2026-04-30 00:05:06  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[81.9600-82.0800] | SL=82.1864 | score=0.19 | waiting)
+2026-04-30 00:05:06  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.1700-82.9600] | SL=83.0366 | score=0.99 | waiting)
+2026-04-30 00:05:06  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.9100-83.0100] | SL=83.0766 | score=0.33 | waiting)
+2026-04-30 00:05:06  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[83.5500-83.7200] | SL=83.8368 | score=0.45 | waiting)
+2026-04-30 00:05:06  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[83.9900-84.1700] | SL=84.1968 | score=0.45 | waiting)
+2026-04-30 00:05:06  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.1600-84.3000] | SL=84.4069 | score=0.22 | waiting)
+2026-04-30 00:05:06  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.4000-84.5600] | SL=84.6269 | score=0.37 | waiting)
+2026-04-30 00:05:18  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2224.5400-2232.8100] | SL=2237.5374 | score=0.43 | waiting)
+2026-04-30 00:05:18  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 00:05:19  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[81.9600-82.0800] | SL=82.1864 | score=0.19 | invalidated)
+2026-04-30 00:05:19  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[82.1700-82.9600] | SL=83.0366 | score=0.99 | invalidated)
+2026-04-30 00:05:19  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[82.9100-83.0100] | SL=83.0766 | score=0.33 | invalidated)
+2026-04-30 00:05:29  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2224.5400-2232.8100] | SL=2237.5374 | score=0.43 | invalidated)
+2026-04-30 00:08:23  WARNING   Network error fetching ETH/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=ETHUSDT
+2026-04-30 00:10:12  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[81.6700-81.8700] | SL=81.5237 | score=0.41 | waiting)
+2026-04-30 00:10:15  INFO      Margin mode set to ISOLATED on SOL/USDT
+2026-04-30 00:10:16  INFO      Leverage set to 5x on SOL/USDT
+2026-04-30 00:10:16  INFO      Pre-trade cleanup: cancelled all orders on SOL/USDT
+2026-04-30 00:10:17  INFO      OPENED Trade(SOL/USDT LONG | entry=81.8900 SL=81.5237 | qty=12.032768 | open)
+2026-04-30 00:10:31  WARNING   Network error fetching positions for SOL/USDT (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/leverageBracket?timestamp=1777488018933&recvWindow=15000&signature=b9e2cbacefa8d00c1745e649480015b69cc54237b7c77a58bc62a5f049f3a355
+2026-04-30 00:17:49  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 14:35:54  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-30 14:35:54  INFO      Restored 1 open trade(s) from bot_state.json
+2026-04-30 14:35:56  INFO      Reconciled 1 stale trade(s) at startup: ['SOL/USDT'] (positions already closed on exchange — P&L unknown, set to 0)
+2026-04-30 14:35:57  INFO      ============================================================
+2026-04-30 14:35:57  INFO        FVG Trading Bot starting up
+2026-04-30 14:35:57  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-30 14:35:57  INFO        TP mode:   STRUCTURE
+2026-04-30 14:35:57  INFO        Symbols:   ETH/USDT, SOL/USDT, BNB/USDT
+2026-04-30 14:35:57  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-30 14:35:57  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-30 14:35:57  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-30 14:35:57  INFO      ============================================================
+2026-04-30 14:35:57  INFO      Bot loop started
+2026-04-30 14:35:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2322.7000-2326.6100] | SL=2321.4656 | score=0.70 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2314.2400-2324.6900] | SL=2312.8173 | score=0.71 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2305.5400-2310.2800] | SL=2303.5992 | score=0.62 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2299.8800-2304.0600] | SL=2296.9905 | score=0.71 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2289.6300-2293.4700] | SL=2288.9121 | score=0.63 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2286.1700-2291.6100] | SL=2284.6930 | score=0.61 | waiting)
+2026-04-30 14:35:57  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2322.7000-2326.6100] | SL=2321.4656 | score=0.70 | invalidated)
+2026-04-30 14:35:57  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2314.2400-2324.6900] | SL=2312.8173 | score=0.71 | invalidated)
+2026-04-30 14:35:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.6300-84.7300] | SL=84.5531 | score=0.43 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.5600-84.6800] | SL=84.7069 | score=0.59 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.6200-84.7100] | SL=84.5431 | score=0.49 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.2100-84.3700] | SL=84.1632 | score=0.79 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.9400-84.0700] | SL=83.8832 | score=0.57 | waiting)
+2026-04-30 14:35:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.8800-84.0100] | SL=83.7932 | score=0.64 | waiting)
+2026-04-30 14:35:57  INFO      FVG invalidated: FVG(SOL/USDT 5m BULLISH | gap=[84.6300-84.7300] | SL=84.5531 | score=0.43 | invalidated)
+2026-04-30 14:35:57  INFO      FVG invalidated: FVG(SOL/USDT 5m BULLISH | gap=[84.6200-84.7100] | SL=84.5431 | score=0.49 | invalidated)
+2026-04-30 14:35:58  INFO      New FVG: FVG(BNB/USDT 5m BULLISH | gap=[615.4600-616.2800] | SL=615.2469 | score=0.44 | waiting)
+2026-04-30 14:35:58  INFO      New FVG: FVG(BNB/USDT 5m BEARISH | gap=[617.3300-617.9600] | SL=618.1136 | score=0.56 | waiting)
+2026-04-30 14:35:58  INFO      New FVG: FVG(BNB/USDT 5m BEARISH | gap=[617.9700-620.0100] | SL=620.2440 | score=0.69 | waiting)
+2026-04-30 14:35:58  INFO      Margin mode set to ISOLATED on BNB/USDT
+2026-04-30 14:35:58  INFO      Leverage set to 5x on BNB/USDT
+2026-04-30 14:35:58  INFO      Pre-trade cleanup: cancelled all orders on BNB/USDT
+2026-04-30 14:35:59  INFO      OPENED Trade(BNB/USDT SHORT | entry=617.2200 SL=618.1136 | qty=1.597607 | open)
+2026-04-30 14:36:22  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[82.7300-82.8800] | SL=82.2535 | score=0.27 | waiting)
+2026-04-30 14:36:22  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[82.5000-82.6400] | SL=82.2535 | score=0.46 | waiting)
+2026-04-30 14:36:22  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.9900-83.5600] | SL=83.5867 | score=0.74 | waiting)
+2026-04-30 14:36:22  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[83.6500-83.7600] | SL=83.8568 | score=0.40 | waiting)
+2026-04-30 14:36:22  WARNING   set_margin_mode(isolated, SOL/USDT) failed: binance {"code":-4067,"msg":"Position side cannot be changed if there exists open orders."}
+2026-04-30 14:36:23  INFO      Leverage set to 5x on SOL/USDT
+2026-04-30 14:36:23  INFO      Pre-trade cleanup: cancelled all orders on SOL/USDT
+2026-04-30 14:36:24  INFO      OPENED Trade(SOL/USDT SHORT | entry=83.0900 SL=83.5867 | qty=11.377948 | open)
+2026-04-30 14:36:35  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2256.4200-2259.3600] | SL=2260.5620 | score=0.55 | waiting)
+2026-04-30 14:36:35  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2249.6100-2253.6400] | SL=2249.0701 | score=0.55 | waiting)
+2026-04-30 14:36:35  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2245.9900-2248.6400] | SL=2245.4108 | score=0.50 | waiting)
+2026-04-30 14:36:35  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2248.3200-2250.9300] | SL=2247.8503 | score=0.33 | waiting)
+2026-04-30 14:36:35  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2264.5800-2268.2600] | SL=2268.9537 | score=0.55 | waiting)
+2026-04-30 14:36:36  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 14:36:36  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 14:36:36  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 14:36:37  INFO      OPENED Trade(ETH/USDT SHORT | entry=2255.1600 SL=2260.5620 | qty=0.402902 | open)
+2026-04-30 14:48:34  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 14:57:34  INFO      Cleanup done for ETH/USDT (position closed)
+2026-04-30 14:57:34  WARNING   Position ETH/USDT closed, orders gone. Using market price 2261.1000 as exit estimate.
+2026-04-30 14:57:34  INFO      CLOSED ETH/USDT SHORT | reason=stop_loss | exit=2261.1000 | P&L=$-2.39 (-221.6% of risk) | R:R=-1.10x
+2026-04-30 14:58:10  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2500] | SL=83.0734 | score=0.41 | waiting)
+2026-04-30 14:58:22  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.1900-2261.1100] | SL=2256.5086 | score=0.55 | waiting)
+2026-04-30 14:58:22  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 14:58:22  WARNING   SOFTWARE SL TRIGGERED for BNB/USDT: price 618.1500 breached SL 618.1136. Market-closing now.
+2026-04-30 14:58:23  ERROR     Software stop_loss market close failed: binance {"code":-2022,"msg":"ReduceOnly Order is rejected."}
+2026-04-30 14:58:26  INFO      Cleanup done for BNB/USDT (position closed)
+2026-04-30 14:58:26  WARNING   Position BNB/USDT closed, orders gone. Using market price 618.3900 as exit estimate.
+2026-04-30 14:58:26  INFO      CLOSED BNB/USDT SHORT | reason=stop_loss | exit=618.3900 | P&L=$-1.87 (-249.2% of risk) | R:R=-1.31x
+2026-04-30 14:58:38  INFO      No structure target ≥ 3.1R for BNB/USDT (best=0.00R) — will retry
+2026-04-30 14:58:49  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 14:58:49  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 14:58:49  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 14:58:50  INFO      OPENED Trade(ETH/USDT LONG | entry=2263.1424 SL=2256.5086 | qty=0.419591 | open)
+2026-04-30 15:01:29  INFO      SUMMARY | Closed=3 | Wins=0 | Win%=0.0% | Total P&L=$-4.26
+2026-04-30 15:09:06  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2263.1900-2265.8100] | SL=2260.6478 | score=0.33 | waiting)
+2026-04-30 15:13:33  INFO      SUMMARY | Closed=3 | Wins=0 | Win%=0.0% | Total P&L=$-4.26
+2026-04-30 15:25:36  INFO      SUMMARY | Closed=3 | Wins=0 | Win%=0.0% | Total P&L=$-4.26
+2026-04-30 15:26:08  WARNING   Network error fetching balance (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v3/account?timestamp=1777543073918&recvWindow=15000&signature=a7408490528c6adf3f7eac652a82d367507c4b89764d1ada3eca74bc7058f568
+2026-04-30 15:26:39  WARNING   Network error fetching balance (attempt 2/3): binance GET https://demo-fapi.binance.com/fapi/v3/account?timestamp=1777543084930&recvWindow=15000&signature=665fe8aa09c6791b101848e869729c261ef63feeb8588f6a60ad4a555bd9fd8c
+2026-04-30 15:27:11  WARNING   Network error fetching balance (attempt 3/3): binance GET https://demo-fapi.binance.com/fapi/v3/account?timestamp=1777543117030&recvWindow=15000&signature=0c04fd9351d30b1e49e4ea90152be3d3f15c4ecc2acb5de1e481f99804270488
+2026-04-30 15:27:46  WARNING   Network error fetching ETH/USDT 5m (attempt 1/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=ETHUSDT
+2026-04-30 15:28:17  WARNING   Network error fetching ETH/USDT 5m (attempt 2/3): binance GET https://demo-fapi.binance.com/fapi/v1/klines?interval=5m&limit=100&symbol=ETHUSDT
+2026-04-30 15:40:15  INFO      SUMMARY | Closed=3 | Wins=0 | Win%=0.0% | Total P&L=$-4.26
+2026-04-30 15:43:13  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.9900-83.1200] | SL=83.1466 | score=0.46 | waiting)
+2026-04-30 15:48:23  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2258.7500-2261.1400] | SL=2261.6022 | score=0.45 | waiting)
+2026-04-30 15:52:13  INFO      SUMMARY | Closed=3 | Wins=0 | Win%=0.0% | Total P&L=$-4.26
+2026-04-30 15:52:36  INFO      Margin mode set to ISOLATED on BNB/USDT
+2026-04-30 15:52:36  INFO      Leverage set to 5x on BNB/USDT
+2026-04-30 15:52:36  INFO      Pre-trade cleanup: cancelled all orders on BNB/USDT
+2026-04-30 15:52:37  INFO      OPENED Trade(BNB/USDT LONG | entry=616.2800 SL=615.2469 | qty=1.477565 | open)
+2026-04-30 15:57:03  INFO      Cleanup done for ETH/USDT (position closed)
+2026-04-30 15:57:03  WARNING   Position ETH/USDT closed, orders gone. Using market price 2256.4500 as exit estimate.
+2026-04-30 15:57:03  INFO      CLOSED ETH/USDT LONG | reason=stop_loss | exit=2256.4500 | P&L=$-2.81 (-253.0% of risk) | R:R=-1.01x
+2026-04-30 15:57:14  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2263.1900-2265.8100] | SL=2260.6478 | score=0.33 | invalidated)
+2026-04-30 16:01:28  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 16:02:05  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 16:02:05  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 16:02:05  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 16:02:06  INFO      OPENED Trade(ETH/USDT SHORT | entry=2259.8122 SL=2261.6022 | qty=0.403073 | open)
+2026-04-30 16:05:32  INFO      SUMMARY | Closed=4 | Wins=0 | Win%=0.0% | Total P&L=$-7.07
+2026-04-30 16:18:08  INFO      SUMMARY | Closed=4 | Wins=0 | Win%=0.0% | Total P&L=$-7.07
+2026-04-30 16:29:06  INFO      Cleanup done for ETH/USDT (position closed)
+2026-04-30 16:29:06  WARNING   Position ETH/USDT closed, orders gone. Using market price 2261.6000 as exit estimate.
+2026-04-30 16:29:06  INFO      CLOSED ETH/USDT SHORT | reason=stop_loss | exit=2261.6000 | P&L=$-0.72 (-107.5% of risk) | R:R=-1.00x
+2026-04-30 16:30:43  INFO      SUMMARY | Closed=5 | Wins=0 | Win%=0.0% | Total P&L=$-7.79
+2026-04-30 16:42:48  INFO      SUMMARY | Closed=5 | Wins=0 | Win%=0.0% | Total P&L=$-7.79
+2026-04-30 16:43:11  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0700-83.2500] | SL=83.0434 | score=0.43 | waiting)
+2026-04-30 16:55:02  INFO      SUMMARY | Closed=5 | Wins=0 | Win%=0.0% | Total P&L=$-7.79
+2026-04-30 17:07:10  INFO      SUMMARY | Closed=5 | Wins=0 | Win%=0.0% | Total P&L=$-7.79
+2026-04-30 17:13:14  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.9000-83.1300] | SL=83.1466 | score=0.55 | waiting)
+2026-04-30 17:13:26  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2259.7700-2263.3400] | SL=2263.8127 | score=0.48 | waiting)
+2026-04-30 17:13:26  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 17:14:30  INFO      Cleanup done for BNB/USDT (position closed)
+2026-04-30 17:14:30  WARNING   Position BNB/USDT closed, orders gone. Using market price 615.2100 as exit estimate.
+2026-04-30 17:14:30  INFO      CLOSED BNB/USDT LONG | reason=stop_loss | exit=615.2100 | P&L=$-1.58 (-171.8% of risk) | R:R=-1.04x
+2026-04-30 17:19:07  INFO      SUMMARY | Closed=6 | Wins=0 | Win%=0.0% | Total P&L=$-9.37
+2026-04-30 18:57:43  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-30 18:57:43  INFO      Restored 1 open trade(s) from bot_state.json
+2026-04-30 18:57:45  INFO      ============================================================
+2026-04-30 18:57:45  INFO        FVG Trading Bot starting up
+2026-04-30 18:57:45  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-30 18:57:45  INFO        TP mode:   STRUCTURE
+2026-04-30 18:57:45  INFO        Symbols:   ETH/USDT, SOL/USDT, BNB/USDT
+2026-04-30 18:57:45  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-30 18:57:45  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-30 18:57:45  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-30 18:57:45  INFO      ============================================================
+2026-04-30 18:57:45  INFO      Bot loop started
+2026-04-30 18:57:45  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2322.7000-2326.6100] | SL=2321.4656 | score=0.70 | waiting)
+2026-04-30 18:57:45  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2314.2400-2324.6900] | SL=2312.8173 | score=0.71 | waiting)
+2026-04-30 18:57:45  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2305.5400-2310.2800] | SL=2303.5992 | score=0.62 | waiting)
+2026-04-30 18:57:45  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2299.8800-2304.0600] | SL=2296.9905 | score=0.71 | waiting)
+2026-04-30 18:57:45  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2289.6300-2293.4700] | SL=2288.9121 | score=0.63 | waiting)
+2026-04-30 18:57:45  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2286.1700-2291.6100] | SL=2284.6930 | score=0.61 | waiting)
+2026-04-30 18:57:45  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2322.7000-2326.6100] | SL=2321.4656 | score=0.70 | invalidated)
+2026-04-30 18:57:45  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2314.2400-2324.6900] | SL=2312.8173 | score=0.71 | invalidated)
+2026-04-30 18:57:46  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.6300-84.7300] | SL=84.5531 | score=0.43 | waiting)
+2026-04-30 18:57:46  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[84.5600-84.6800] | SL=84.7069 | score=0.59 | waiting)
+2026-04-30 18:57:46  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.6200-84.7100] | SL=84.5431 | score=0.49 | waiting)
+2026-04-30 18:57:46  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[84.2100-84.3700] | SL=84.1632 | score=0.79 | waiting)
+2026-04-30 18:57:46  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.9400-84.0700] | SL=83.8832 | score=0.57 | waiting)
+2026-04-30 18:57:46  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.8800-84.0100] | SL=83.7932 | score=0.64 | waiting)
+2026-04-30 18:57:57  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2256.4200-2259.3600] | SL=2260.5620 | score=0.53 | waiting)
+2026-04-30 18:57:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2249.6100-2253.6400] | SL=2249.0701 | score=0.52 | waiting)
+2026-04-30 18:57:57  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2245.9900-2248.6400] | SL=2245.4108 | score=0.48 | waiting)
+2026-04-30 18:57:57  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 18:57:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0600-83.2100] | SL=83.0334 | score=0.66 | waiting)
+2026-04-30 18:57:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2400] | SL=83.0734 | score=0.63 | waiting)
+2026-04-30 18:57:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[82.7300-82.8800] | SL=82.2535 | score=0.32 | waiting)
+2026-04-30 18:57:57  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[82.5000-82.6400] | SL=82.2535 | score=0.52 | waiting)
+2026-04-30 18:58:20  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2257.7800-2262.0700] | SL=2262.5924 | score=0.47 | waiting)
+2026-04-30 18:58:43  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 19:03:34  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[83.0500-83.1500] | SL=83.1866 | score=0.27 | waiting)
+2026-04-30 19:04:56  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2256.4200-2259.3600] | SL=2260.5620 | score=0.53 | invalidated)
+2026-04-30 19:05:19  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 19:08:02  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2257.7800-2262.0700] | SL=2262.5924 | score=0.47 | invalidated)
+2026-04-30 19:08:37  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.7900-2262.2900] | SL=2255.1389 | score=0.50 | waiting)
+2026-04-30 19:08:37  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2257.7900-2262.2900] | SL=2255.1389 | score=0.50 | invalidated)
+2026-04-30 19:09:11  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2259.7700-2263.3400] | SL=2263.8127 | score=0.48 | invalidated)
+2026-04-30 19:09:13  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 19:13:15  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.4400] | SL=83.1134 | score=0.64 | waiting)
+2026-04-30 19:13:15  INFO      New FVG: FVG(BNB/USDT 5m BULLISH | gap=[615.9000-617.0100] | SL=615.7468 | score=0.60 | waiting)
+2026-04-30 19:13:15  INFO      No structure target ≥ 3.1R for BNB/USDT (best=0.00R) — will retry
+2026-04-30 19:20:48  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 19:34:18  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-30 19:34:18  INFO      Restored 1 open trade(s) from bot_state.json
+2026-04-30 19:34:20  INFO      ============================================================
+2026-04-30 19:34:20  INFO        FVG Trading Bot starting up
+2026-04-30 19:34:20  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-30 19:34:20  INFO        TP mode:   STRUCTURE
+2026-04-30 19:34:20  INFO        Symbols:   ETH/USDT, SOL/USDT, BNB/USDT
+2026-04-30 19:34:20  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-30 19:34:20  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-30 19:34:20  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-30 19:34:20  INFO      ============================================================
+2026-04-30 19:34:20  INFO      Bot loop started
+2026-04-30 19:34:20  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.7900-2262.0100] | SL=2255.1389 | score=0.47 | waiting)
+2026-04-30 19:34:20  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2261.3900-2265.6500] | SL=2260.7678 | score=0.48 | waiting)
+2026-04-30 19:34:20  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.1900-2261.1000] | SL=2256.5086 | score=0.50 | waiting)
+2026-04-30 19:34:20  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2249.6100-2253.6400] | SL=2249.0701 | score=0.48 | waiting)
+2026-04-30 19:34:20  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2245.9900-2248.6400] | SL=2245.4108 | score=0.45 | waiting)
+2026-04-30 19:34:21  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0700-83.2100] | SL=83.0434 | score=0.50 | waiting)
+2026-04-30 19:34:21  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2400] | SL=83.0734 | score=0.57 | waiting)
+2026-04-30 19:34:21  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[82.7300-82.8800] | SL=82.2535 | score=0.26 | waiting)
+2026-04-30 19:34:21  INFO      No structure target ≥ 3.1R for BNB/USDT (best=0.00R) — will retry
+2026-04-30 19:34:32  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2257.7900-2262.0100] | SL=2255.1389 | score=0.47 | invalidated)
+2026-04-30 19:34:32  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2261.3900-2265.6500] | SL=2260.7678 | score=0.48 | invalidated)
+2026-04-30 19:34:32  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 19:34:32  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 19:34:33  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 19:34:33  INFO      OPENED Trade(ETH/USDT LONG | entry=2267.4700 SL=2256.5086 | qty=0.418952 | open)
+2026-04-30 19:36:10  INFO      FVG invalidated: FVG(BNB/USDT 5m BULLISH | gap=[615.9000-617.0100] | SL=615.7468 | score=0.60 | invalidated)
+2026-04-30 19:44:43  INFO      Cleanup done for ETH/USDT (position closed)
+2026-04-30 19:44:43  WARNING   Position ETH/USDT closed, orders gone. Using market price 2256.6700 as exit estimate.
+2026-04-30 19:44:43  INFO      CLOSED ETH/USDT LONG | reason=stop_loss | exit=2256.6700 | P&L=$-4.52 (-411.3% of risk) | R:R=-0.99x
+2026-04-30 19:46:17  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$-4.52
+2026-04-30 19:48:24  INFO      New FVG: FVG(SOL/USDT 5m BEARISH | gap=[82.8000-83.0300] | SL=83.1166 | score=0.39 | waiting)
+2026-04-30 19:48:24  INFO      New FVG: FVG(BNB/USDT 5m BEARISH | gap=[614.5600-615.2700] | SL=615.6931 | score=0.32 | waiting)
+2026-04-30 19:48:24  INFO      No structure target ≥ 3.1R for BNB/USDT (best=0.00R) — will retry
+2026-04-30 19:48:47  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2252.7900-2260.4700] | SL=2261.1821 | score=0.49 | waiting)
+2026-04-30 19:48:47  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 19:51:31  INFO      FVG invalidated: FVG(BNB/USDT 5m BEARISH | gap=[614.5600-615.2700] | SL=615.6931 | score=0.32 | invalidated)
+2026-04-30 19:57:55  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$-4.52
+2026-04-30 20:00:13  INFO      FVG invalidated: FVG(ETH/USDT 5m BEARISH | gap=[2252.7900-2260.4700] | SL=2261.1821 | score=0.49 | invalidated)
+2026-04-30 20:09:31  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$-4.52
+2026-04-30 20:18:34  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0800-83.2000] | SL=83.0334 | score=0.33 | waiting)
+2026-04-30 20:19:08  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.8100-2262.7400] | SL=2256.7786 | score=0.49 | waiting)
+2026-04-30 20:19:08  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 20:19:20  INFO      FVG invalidated: FVG(ETH/USDT 5m BULLISH | gap=[2257.8100-2262.7400] | SL=2256.7786 | score=0.49 | invalidated)
+2026-04-30 20:21:08  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$-4.52
+2026-04-30 20:28:01  INFO      Shutdown signal received — stopping bot...
+2026-04-30 20:28:05  INFO      Bot stopped cleanly
+2026-04-30 20:28:05  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$-4.52
+2026-04-30 20:28:13  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-30 20:28:13  INFO      Restored 1 open trade(s) from bot_state.json
+2026-04-30 20:28:15  INFO      ============================================================
+2026-04-30 20:28:15  INFO        FVG Trading Bot starting up
+2026-04-30 20:28:15  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-30 20:28:15  INFO        TP mode:   STRUCTURE
+2026-04-30 20:28:15  INFO        Symbols:   ETH/USDT, SOL/USDT, BNB/USDT
+2026-04-30 20:28:15  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-30 20:28:15  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-30 20:28:15  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-30 20:28:15  INFO      ============================================================
+2026-04-30 20:28:15  INFO      Bot loop started
+2026-04-30 20:28:16  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.8100-2262.7400] | SL=2256.7786 | score=0.57 | waiting)
+2026-04-30 20:28:16  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.7900-2262.0100] | SL=2255.1389 | score=0.45 | waiting)
+2026-04-30 20:28:16  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2257.7900-2262.0700] | SL=2262.5924 | score=0.46 | waiting)
+2026-04-30 20:28:16  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2261.3900-2265.6500] | SL=2260.7678 | score=0.46 | waiting)
+2026-04-30 20:28:16  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2259.7800-2263.3400] | SL=2263.8127 | score=0.59 | waiting)
+2026-04-30 20:28:16  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.1900-2261.1000] | SL=2256.5086 | score=0.48 | waiting)
+2026-04-30 20:28:16  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2249.6100-2253.6400] | SL=2249.0701 | score=0.46 | waiting)
+2026-04-30 20:28:16  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 20:28:16  INFO      No structure target ≥ 3.1R for ETH/USDT (best=0.00R) — will retry
+2026-04-30 20:28:16  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 20:28:16  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 20:28:16  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 20:28:17  ERROR     REJECTED ETH/USDT: filled @ 2263.7700 but SL is 2262.5924 (below entry). Likely thin liquidity slipped through the FVG. Closing immediately.
+2026-04-30 20:28:17  INFO      FVG ETH/USDT marked consumed after failed entry (will not retry)
+2026-04-30 20:28:17  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0600-83.2100] | SL=83.0334 | score=0.51 | waiting)
+2026-04-30 20:28:17  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0700-83.2100] | SL=83.0434 | score=0.43 | waiting)
+2026-04-30 20:28:17  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2400] | SL=83.0734 | score=0.51 | waiting)
+2026-04-30 20:28:29  INFO      Pre-trade cleanup: cancelled all orders on ETH/USDT
+2026-04-30 20:28:29  INFO      Margin mode set to ISOLATED on ETH/USDT
+2026-04-30 20:28:29  INFO      Leverage set to 5x on ETH/USDT
+2026-04-30 20:28:30  INFO      OPENED Trade(ETH/USDT LONG | entry=2263.8400 SL=2256.7786 | qty=0.418203 | open)
+2026-04-30 20:40:13  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 20:52:22  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 20:59:52  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.2900-83.3800] | SL=83.2334 | score=0.67 | waiting)
+2026-04-30 20:59:52  WARNING   SOFTWARE SL TRIGGERED for SOL/USDT: price 83.5900 breached SL 83.5867. Market-closing now.
+2026-04-30 20:59:53  ERROR     Software stop_loss market close failed: binance {"code":-2022,"msg":"ReduceOnly Order is rejected."}
+2026-04-30 20:59:56  INFO      Cleanup done for SOL/USDT (position closed)
+2026-04-30 20:59:57  WARNING   Position SOL/USDT closed, orders gone. Using market price 83.5900 as exit estimate.
+2026-04-30 20:59:57  INFO      CLOSED SOL/USDT SHORT | reason=stop_loss | exit=83.5900 | P&L=$-5.69 (-160.2% of risk) | R:R=-1.01x
+2026-04-30 21:00:08  INFO      FVG invalidated: FVG(SOL/USDT 5m BULLISH | gap=[83.2900-83.3800] | SL=83.2334 | score=0.67 | invalidated)
+2026-04-30 21:00:08  INFO      Pre-trade cleanup: cancelled all orders on SOL/USDT
+2026-04-30 21:00:08  INFO      Margin mode set to ISOLATED on SOL/USDT
+2026-04-30 21:00:08  INFO      Leverage set to 5x on SOL/USDT
+2026-04-30 21:00:08  WARNING   SKIPPED SOL/USDT: market price 83.6000 has drifted 0.55% from FVG entry 83.1400. Not placing order.
+2026-04-30 21:00:20  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[82.8000-83.0300] | SL=83.1166 | score=0.39 | invalidated)
+2026-04-30 21:00:24  INFO      Shutdown signal received — stopping bot...
+2026-04-30 21:00:31  INFO      Bot stopped cleanly
+2026-04-30 21:00:31  INFO      SUMMARY | Closed=1 | Wins=0 | Win%=0.0% | Total P&L=$-5.69
+2026-04-30 21:00:37  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-30 21:00:37  INFO      Restored 1 open trade(s) from bot_state.json
+2026-04-30 21:00:40  INFO      ============================================================
+2026-04-30 21:00:40  INFO        FVG Trading Bot starting up
+2026-04-30 21:00:40  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-30 21:00:40  INFO        TP mode:   STRUCTURE
+2026-04-30 21:00:40  INFO        Symbols:   ETH/USDT, SOL/USDT, BNB/USDT
+2026-04-30 21:00:40  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-30 21:00:40  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-30 21:00:40  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-30 21:00:40  INFO      ============================================================
+2026-04-30 21:00:40  INFO      Bot loop started
+2026-04-30 21:00:40  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.8100-2262.7400] | SL=2256.7786 | score=0.57 | waiting)
+2026-04-30 21:00:40  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2261.3900-2265.6500] | SL=2260.7678 | score=0.46 | waiting)
+2026-04-30 21:00:40  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.1900-2261.1000] | SL=2256.5086 | score=0.48 | waiting)
+2026-04-30 21:00:40  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2249.6100-2253.6400] | SL=2249.0701 | score=0.46 | waiting)
+2026-04-30 21:00:41  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2900] | SL=83.1134 | score=0.60 | waiting)
+2026-04-30 21:00:41  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0600-83.2100] | SL=83.0334 | score=0.49 | waiting)
+2026-04-30 21:00:41  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0700-83.2100] | SL=83.0434 | score=0.42 | waiting)
+2026-04-30 21:00:41  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2400] | SL=83.0734 | score=0.50 | waiting)
+2026-04-30 21:00:41  INFO      FVG invalidated: FVG(SOL/USDT 5m BULLISH | gap=[83.2900-83.3800] | SL=83.2334 | score=0.67 | invalidated)
+2026-04-30 21:00:41  INFO      Pre-trade cleanup: cancelled all orders on SOL/USDT
+2026-04-30 21:00:41  INFO      Margin mode set to ISOLATED on SOL/USDT
+2026-04-30 21:00:41  INFO      Leverage set to 5x on SOL/USDT
+2026-04-30 21:00:42  WARNING   SKIPPED SOL/USDT: market price 83.6300 has drifted 0.59% from FVG entry 83.1400. Not placing order.
+2026-04-30 21:00:53  INFO      FVG invalidated: FVG(SOL/USDT 5m BEARISH | gap=[82.8000-83.0300] | SL=83.1166 | score=0.39 | invalidated)
+2026-04-30 21:01:17  INFO      Pre-trade cleanup: cancelled all orders on SOL/USDT
+2026-04-30 21:01:17  INFO      Margin mode set to ISOLATED on SOL/USDT
+2026-04-30 21:01:17  INFO      Leverage set to 5x on SOL/USDT
+2026-04-30 21:01:18  WARNING   SKIPPED SOL/USDT: market price 83.5600 has drifted 0.51% from FVG entry 83.1400. Not placing order.
+2026-04-30 21:01:30  INFO      Pre-trade cleanup: cancelled all orders on SOL/USDT
+2026-04-30 21:01:30  INFO      Margin mode set to ISOLATED on SOL/USDT
+2026-04-30 21:01:30  INFO      Leverage set to 5x on SOL/USDT
+2026-04-30 21:01:31  INFO      OPENED Trade(SOL/USDT LONG | entry=83.6600 SL=83.0334 | qty=11.353183 | open)
+2026-04-30 21:12:38  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 21:25:05  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 21:37:13  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 21:46:57  INFO      Shutdown signal received — stopping bot...
+2026-04-30 21:46:58  INFO      Bot stopped cleanly
+2026-04-30 21:46:58  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-04-30 21:47:02  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-04-30 21:47:02  INFO      Restored 2 open trade(s) from bot_state.json
+2026-04-30 21:47:05  INFO      ============================================================
+2026-04-30 21:47:05  INFO        FVG Trading Bot starting up
+2026-04-30 21:47:05  INFO        Mode:      DEMO TRADING  (dry_run=False)
+2026-04-30 21:47:05  INFO        TP mode:   STRUCTURE
+2026-04-30 21:47:05  INFO        Symbols:   XRP/USDT, DOGE/USDT, LINK/USDT, SOL/USDT, ETH/USDT, BNB/USDT
+2026-04-30 21:47:05  INFO        Timeframe: 5m (entry: 1m, HTF: 1h)
+2026-04-30 21:47:05  INFO        Risk:      0.50%/trade  |  Notional cap 20%  |  Default lev 5x
+2026-04-30 21:47:05  INFO        Filters:   Gap ≥ 0.10%  |  R:R ≥ 3.1  |  Score OFF  |  HTF OFF
+2026-04-30 21:47:05  INFO      ============================================================
+2026-04-30 21:47:05  INFO      Bot loop started
+2026-04-30 21:47:05  INFO      New FVG: FVG(XRP/USDT 5m BEARISH | gap=[1.3665-1.3686] | SL=1.3697 | score=0.44 | waiting)
+2026-04-30 21:47:05  INFO      New FVG: FVG(XRP/USDT 5m BEARISH | gap=[1.3670-1.3692] | SL=1.3697 | score=0.67 | waiting)
+2026-04-30 21:47:05  INFO      No structure target ≥ 3.1R for XRP/USDT (best=0.00R) — will retry
+2026-04-30 21:47:06  INFO      Pre-trade cleanup: cancelled all orders on XRP/USDT
+2026-04-30 21:47:06  INFO      Margin mode set to ISOLATED on XRP/USDT
+2026-04-30 21:47:06  INFO      Leverage set to 5x on XRP/USDT
+2026-04-30 21:47:07  INFO      OPENED Trade(XRP/USDT SHORT | entry=1.3673 SL=1.3697 | qty=662.027492 | open)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1045-0.1047] | SL=0.1045 | score=0.31 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1043-0.1045] | SL=0.1041 | score=0.29 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1029-0.1041] | SL=0.1028 | score=0.67 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1024-0.1029] | SL=0.1024 | score=0.47 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1022-0.1024] | SL=0.1021 | score=0.61 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1017-0.1021] | SL=0.1016 | score=0.53 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1017-0.1022] | SL=0.1016 | score=0.65 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1015-0.1016] | SL=0.1014 | score=0.45 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1009-0.1011] | SL=0.1007 | score=0.47 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(LINK/USDT 5m BULLISH | gap=[9.1220-9.1350] | SL=9.1132 | score=0.49 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(LINK/USDT 5m BULLISH | gap=[9.1200-9.1360] | SL=9.1182 | score=0.46 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(LINK/USDT 5m BEARISH | gap=[9.1200-9.1360] | SL=9.1478 | score=0.58 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(LINK/USDT 5m BULLISH | gap=[9.1270-9.1410] | SL=9.1232 | score=0.48 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(LINK/USDT 5m BULLISH | gap=[9.1150-9.1250] | SL=9.1082 | score=0.48 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(LINK/USDT 5m BULLISH | gap=[9.1130-9.1300] | SL=9.1102 | score=0.66 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.2900-83.3800] | SL=83.2334 | score=0.67 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0800-83.2000] | SL=83.0334 | score=0.38 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2900] | SL=83.1134 | score=0.61 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0600-83.2100] | SL=83.0334 | score=0.51 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.0700-83.2100] | SL=83.0434 | score=0.44 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(SOL/USDT 5m BULLISH | gap=[83.1400-83.2400] | SL=83.0734 | score=0.51 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2322.7000-2326.6100] | SL=2321.4656 | score=0.70 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2314.2400-2324.6900] | SL=2312.8173 | score=0.71 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2305.5400-2310.2800] | SL=2303.5992 | score=0.62 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2299.8800-2304.0600] | SL=2296.9905 | score=0.71 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2289.6300-2293.4700] | SL=2288.9121 | score=0.63 | waiting)
+2026-04-30 21:47:07  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2286.1700-2291.6100] | SL=2284.6930 | score=0.61 | waiting)
+2026-04-30 21:47:20  INFO      New FVG: FVG(DOGE/USDT 5m BULLISH | gap=[0.1063-0.1066] | SL=0.1062 | score=0.41 | waiting)
+2026-04-30 21:47:20  INFO      New FVG: FVG(DOGE/USDT 5m BEARISH | gap=[0.1066-0.1071] | SL=0.1072 | score=0.49 | waiting)
+2026-04-30 21:47:20  INFO      New FVG: FVG(DOGE/USDT 5m BEARISH | gap=[0.1074-0.1075] | SL=0.1077 | score=0.43 | waiting)
+2026-04-30 21:47:20  INFO      New FVG: FVG(DOGE/USDT 5m BEARISH | gap=[0.1076-0.1077] | SL=0.1078 | score=0.41 | waiting)
+2026-04-30 21:47:20  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2257.7900-2262.0700] | SL=2262.5924 | score=0.48 | waiting)
+2026-04-30 21:47:20  INFO      New FVG: FVG(ETH/USDT 5m BEARISH | gap=[2259.7800-2263.3400] | SL=2263.8127 | score=0.60 | waiting)
+2026-04-30 21:47:20  INFO      New FVG: FVG(ETH/USDT 5m BULLISH | gap=[2257.1900-2261.1000] | SL=2256.5086 | score=0.49 | waiting)

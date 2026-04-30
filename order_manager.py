@@ -244,6 +244,18 @@ def open_trade(exchange: ccxt.binance,
     side    = "buy"  if direction == "long"  else "sell"
     sl_side = "sell" if direction == "long"  else "buy"
 
+    # ── Step 0: Cancel ALL existing orders for this symbol ──
+    # MUST happen BEFORE set_margin_mode — Binance error -4067 rejects margin
+    # mode changes while open orders exist on the symbol.
+    # Also clears orphaned SL/TP from previous trades that Binance Demo failed
+    # to cancel via API. Without this, an old stop_market SL could trigger
+    # against the NEW position and close it prematurely.
+    try:
+        exchange.cancel_all_orders(fvg.symbol)
+        logger.info(f"Pre-trade cleanup: cancelled all orders on {fvg.symbol}")
+    except Exception as e:
+        logger.debug(f"Pre-trade cancel_all_orders({fvg.symbol}): {e}")
+
     # Set margin mode (isolated/cross) and leverage before opening the position.
     # Isolated mode limits loss to the position's margin only — prevents a single
     # bad trade from liquidating the entire account (which cross mode allows).
@@ -263,16 +275,6 @@ def open_trade(exchange: ccxt.binance,
         logger.info(f"Leverage set to {leverage}x on {fvg.symbol}")
     except Exception as e:
         logger.warning(f"set_leverage({leverage}, {fvg.symbol}) failed: {e}")
-
-    # ── Step 0: Cancel ALL existing orders for this symbol ──
-    # Clears orphaned SL/TP from previous trades that Binance Demo failed
-    # to cancel via API. Without this, an old stop_market SL could trigger
-    # against the NEW position and close it prematurely.
-    try:
-        exchange.cancel_all_orders(fvg.symbol)
-        logger.info(f"Pre-trade cleanup: cancelled all orders on {fvg.symbol}")
-    except Exception as e:
-        logger.debug(f"Pre-trade cancel_all_orders({fvg.symbol}): {e}")
 
     # ── Pre-trade price check ──
     # A market order fills at current bid/ask, NOT at the historical gap_mid.

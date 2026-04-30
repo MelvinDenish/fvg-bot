@@ -15,7 +15,14 @@ DRY_RUN      = os.getenv("DRY_RUN", "true").lower() == "true"    # log orders wi
 MARKET_TYPE  = os.getenv("MARKET_TYPE", "future")                 # "future" | "spot" — order_manager uses reduceOnly + stop_market (futures-only)
 
 # ── Trading pairs & timeframes ───────────────
-SYMBOLS    = ["ETH/USDT", "SOL/USDT", "BNB/USDT"]
+# Ranked by 400-day backtest P&L (5m, structure TP, 5x lev):
+#   1. XRP  +12,559%  PF 1.81  Sharpe 4.20
+#   2. DOGE +11,991%  PF 1.66  Sharpe 3.75
+#   3. LINK  +1,215%  PF 1.64  Sharpe 2.76
+#   4. SOL     +709%  PF 1.49  Sharpe 2.32
+#   5. ETH     +545%  PF 1.66  Sharpe 3.19
+#   6. BNB     +348%  PF 1.76  Sharpe 2.82
+SYMBOLS    = ["XRP/USDT", "DOGE/USDT", "LINK/USDT", "SOL/USDT", "ETH/USDT", "BNB/USDT"]
 PRIMARY_TF = "5m"       # FVG detection timeframe
 ENTRY_TF   = "1m"       # entry precision / trade management
 HTF_TF     = "1h"       # higher-timeframe trend filter

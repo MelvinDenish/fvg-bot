@@ -8,7 +8,7 @@ import time
 import logging
 import signal
 import sys
-from datetime import datetime, timezone, date
+from datetime import datetime, timezone, date, timedelta
 
 import pandas as pd
 
@@ -23,6 +23,7 @@ from config import (
     TESTNET, BINANCE_DEMO, DRY_RUN, STATE_FILE, LOG_FILE, LOG_LEVEL,
 )
 from exchange import get_exchange, fetch_ohlcv, get_account_balance, fetch_positions_safe, get_ticker_price
+from trade_logger import log_trade
 from fvg_detector import (
     detect_fvgs, check_retest, is_fvg_invalidated, fvg_quality_score,
 )
@@ -172,6 +173,11 @@ class FVGBot:
         # historical 3-candle pattern every scan cycle.
         from collections import defaultdict
         self.seen_fvgs: dict[str, set] = defaultdict(set)
+
+        # Per-symbol cooldown after a stop-loss to prevent rapid-fire
+        # re-entries on the same FVG zone.  Maps symbol → UTC timestamp
+        # of the earliest allowed next entry.
+        self._entry_cooldown: dict[str, datetime] = {}
         # Seed with anything already restored from state so restarts stay clean
         for sym, fvgs in self.active_fvgs.items():
             for f in fvgs:
@@ -356,6 +362,13 @@ class FVGBot:
         if not self.can_trade(symbol):
             return
 
+        # Cooldown gate: skip if this symbol had a recent SL loss
+        cooldown_until = self._entry_cooldown.get(symbol)
+        if cooldown_until and datetime.now(timezone.utc) < cooldown_until:
+            remaining = (cooldown_until - datetime.now(timezone.utc)).total_seconds()
+            logger.debug(f"{symbol} on cooldown for {remaining:.0f}s more")
+            return
+
         df = self._fetch(symbol, ENTRY_TF, 10)
         if df.empty:
             return
@@ -397,6 +410,19 @@ class FVGBot:
             entry   = fvg.gap_mid
             sl_dist = fvg.sl_distance(entry)
             if sl_dist <= 0:
+                continue
+
+            # Early proximity check: skip if current price has drifted too far
+            # from the planned entry.  For large FVGs, the gap_mid can be very
+            # far from the nearest edge, causing the slippage guard in
+            # open_trade to reject after wasting API calls on margin/leverage/
+            # cancel_all_orders.  Catch it here for zero API cost.
+            drift_pct = abs(c_close - entry) / entry if entry > 0 else 0
+            if drift_pct > 0.005:   # 0.5% — matches slippage guard
+                logger.debug(
+                    f"SKIP {fvg.symbol}: price {c_close:.4f} drifted "
+                    f"{drift_pct*100:.2f}% from entry {entry:.4f}"
+                )
                 continue
 
             # Compute the ACTUAL TP that will be used and gate R:R against it.
@@ -634,8 +660,20 @@ class FVGBot:
                     )
                     return fill, reason
                 except Exception as e:
-                    logger.error(f"Software {reason} market close failed: {e}")
-                    # Position may already be closed — fall through to normal checks
+                    logger.warning(f"Software {reason} market close failed: {e}")
+                    # Position may already be closed by exchange SL — check position
+                    try:
+                        positions = fetch_positions_safe(self.exchange, trade.symbol)
+                        pos_amt = 0.0
+                        for p in positions:
+                            if p.get("symbol") == trade.symbol:
+                                pos_amt = abs(float(p.get("contracts") or 0))
+                        if pos_amt < trade.qty * 0.01:
+                            logger.info(f"Position already closed for {trade.symbol}, using price {current_price:.4f}")
+                            return current_price, reason
+                    except Exception:
+                        pass
+                    # Fall through to normal checks
         tp_filled_by_order, sl_filled_by_order = False, False
         order_fill_price = None
 
@@ -787,6 +825,21 @@ class FVGBot:
             f"P&L=${trade.pnl_usdt:.2f} ({trade.pnl_pct:.1f}% of risk)"
             + (f" | R:R={rr:.2f}x" if rr is not None else "")
         )
+
+        # Cooldown: after a stop-loss, block re-entry on this symbol
+        # for 5 minutes to prevent rapid-fire loop on the same FVG.
+        if reason in ("stop_loss", "software_sl"):
+            cooldown_sec = 300  # 5 minutes
+            self._entry_cooldown[trade.symbol] = (
+                datetime.now(timezone.utc) + timedelta(seconds=cooldown_sec)
+            )
+            logger.info(f"{trade.symbol} cooldown: no re-entry for {cooldown_sec}s")
+
+        # Persist to CSV trade log (survives restarts)
+        try:
+            log_trade(trade)
+        except Exception as e:
+            logger.debug(f"trade_logger write failed: {e}")
 
     # ── Trade management ───────────────────────
     def manage_open_trades(self):

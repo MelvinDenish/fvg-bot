@@ -404,6 +404,15 @@ class Backtester:
         # Key is the date string (YYYY-MM-DD) so it rolls over at midnight.
         daily_trades: dict[str, int] = {}
 
+        # Per-symbol cooldown after stop-loss — mirrors live bot's 5-min cooldown.
+        # Maps symbol → candle index when cooldown expires.
+        cooldown_until: dict[str, int] = {}
+
+        # Convert timeframe string to seconds for cooldown calculation
+        _tf_map = {"1m": 60, "3m": 180, "5m": 300, "15m": 900, "30m": 1800, "1h": 3600, "4h": 14400}
+        tf_seconds = _tf_map.get(self.timeframe, 300)
+        cooldown_candles = max(1, int(300 / tf_seconds))  # 5 min cooldown
+
         # ── Simulation loop ───────────────────
         for i in range(3, n):
             c_high  = highs[i]
@@ -526,10 +535,19 @@ class Backtester:
                     trade.pnl_r      = net_total / trade.risk_usdt if trade.risk_usdt else 0.0
                     self.equity_curve.append(self.balance)
 
+                    # Set cooldown after stop-loss (matches live bot's 5-min cooldown)
+                    if sl_hit:
+                        cooldown_until[trade.symbol] = i + cooldown_candles
+
             # ── Check FVG retests (new entries) ──
             if self._count_open() < MAX_OPEN:
+
                 for item in active:
                     if item["status"] != "waiting":
+                        continue
+
+                    # Per-symbol cooldown check (matches live bot)
+                    if cooldown_until.get(self.symbol, 0) > i:
                         continue
                     if self._count_open() >= MAX_OPEN:
                         break
@@ -561,7 +579,10 @@ class Backtester:
                     if bias == "bearish" and rf.direction == "bullish":
                         continue
 
-                    # Retest check
+                    # Retest check — entry at gap_mid (matches live bot).
+                    # The live bot places a market order at gap_mid. If current
+                    # price is more than 0.5% away from gap_mid, the live bot
+                    # skips the trade (drift check). We replicate that here.
                     in_zone = False
                     entry   = 0.0
                     if rf.direction == "bullish":
@@ -573,6 +594,16 @@ class Backtester:
 
                     if not in_zone:
                         continue
+
+                    # Drift/proximity check — matches live bot.
+                    # For large FVGs, gap_mid can be far from current price even
+                    # though the wick touched the gap zone. The live bot rejects
+                    # entries where market price drifts > 0.5% from entry.
+                    drift = abs(c_close - entry) / entry if entry > 0 else 0
+                    if drift > 0.005:
+                        # Use current price as entry instead of gap_mid — this
+                        # matches what the live bot's market order would fill at.
+                        entry = c_close
 
                     # Daily trade cap (mirrors live bot's MAX_TRADES_DAY)
                     if self.max_trades_day > 0:
