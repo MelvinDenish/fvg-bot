@@ -579,31 +579,29 @@ class Backtester:
                     if bias == "bearish" and rf.direction == "bullish":
                         continue
 
-                    # Retest check — entry at gap_mid (matches live bot).
-                    # The live bot places a market order at gap_mid. If current
-                    # price is more than 0.5% away from gap_mid, the live bot
-                    # skips the trade (drift check). We replicate that here.
+                    # Retest check — wick touches zone, entry at current price.
+                    # The live bot places a MARKET order which fills at current
+                    # price (c_close), NOT at gap_mid. Using gap_mid was
+                    # optimistic — you can't fill inside a gap with a market order.
                     in_zone = False
-                    entry   = 0.0
                     if rf.direction == "bullish":
                         if c_low <= rf.gap_high and c_close >= rf.gap_low:
-                            entry, in_zone = (rf.gap_high + rf.gap_low) / 2, True
+                            in_zone = True
                     else:
                         if c_high >= rf.gap_low and c_close <= rf.gap_high:
-                            entry, in_zone = (rf.gap_high + rf.gap_low) / 2, True
+                            in_zone = True
 
                     if not in_zone:
                         continue
 
-                    # Drift/proximity check — matches live bot.
-                    # For large FVGs, gap_mid can be far from current price even
-                    # though the wick touched the gap zone. The live bot rejects
-                    # entries where market price drifts > 0.5% from entry.
-                    drift = abs(c_close - entry) / entry if entry > 0 else 0
+                    # Use current price as entry — matches live bot market fill
+                    entry = c_close
+
+                    # Drift check: skip if price drifted > 0.5% from gap_mid
+                    gap_mid = (rf.gap_high + rf.gap_low) / 2
+                    drift = abs(c_close - gap_mid) / gap_mid if gap_mid > 0 else 0
                     if drift > 0.005:
-                        # Use current price as entry instead of gap_mid — this
-                        # matches what the live bot's market order would fill at.
-                        entry = c_close
+                        continue  # too far from FVG zone
 
                     # Daily trade cap (mirrors live bot's MAX_TRADES_DAY)
                     if self.max_trades_day > 0:
@@ -638,7 +636,8 @@ class Backtester:
                     # target (fixed, structure). For partial it's just the 50%
                     # trigger; for trailing it's unused. Skip in those modes.
                     if self.tp_mode in ("fixed", "structure"):
-                        if abs(tp - entry_slip) / sl_dist < self.min_rr:
+                        rr_sign = 1 if is_long else -1
+                        if (tp - entry_slip) * rr_sign / sl_dist < self.min_rr:
                             continue
 
                     qty, risk_usdt = self._calc_qty(entry_slip, sl)

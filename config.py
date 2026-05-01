@@ -15,15 +15,13 @@ DRY_RUN      = os.getenv("DRY_RUN", "true").lower() == "true"    # log orders wi
 MARKET_TYPE  = os.getenv("MARKET_TYPE", "future")                 # "future" | "spot" — order_manager uses reduceOnly + stop_market (futures-only)
 
 # ── Trading pairs & timeframes ───────────────
-# Ranked by 400-day backtest P&L (5m, structure TP, 5x lev):
-#   1. XRP  +12,559%  PF 1.81  Sharpe 4.20
-#   2. DOGE +11,991%  PF 1.66  Sharpe 3.75
-#   3. LINK  +1,215%  PF 1.64  Sharpe 2.76
-#   4. SOL     +709%  PF 1.49  Sharpe 2.32
-#   5. ETH     +545%  PF 1.66  Sharpe 3.19
-#   6. BNB     +348%  PF 1.76  Sharpe 2.82
-SYMBOLS    = ["XRP/USDT", "DOGE/USDT", "LINK/USDT", "SOL/USDT", "ETH/USDT", "BNB/USDT"]
-PRIMARY_TF = "5m"       # FVG detection timeframe
+# Top 3 by quality from 400-day REALISTIC backtest (structure TP, 5x):
+#   1m: XRP PF1.55 S4.44 | BNB PF1.90 S3.49 | ETH PF1.52 S3.78
+#   5m: XRP PF1.45 S2.99 | BNB PF1.52 S2.36 | ETH PF1.36 S2.20
+# 1m beats 5m on every quality metric over 400 days.
+# Recent 100d drawdown affects BOTH TFs equally (market regime).
+SYMBOLS    = ["XRP/USDT", "BNB/USDT", "ETH/USDT", "DOGE/USDT"]
+PRIMARY_TF = "1m"       # FVG detection timeframe (1m > 5m on all pairs)
 ENTRY_TF   = "1m"       # entry precision / trade management
 HTF_TF     = "1h"       # higher-timeframe trend filter
 

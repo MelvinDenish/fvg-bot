@@ -152,6 +152,16 @@ class FVGBot:
         # accumulate untriggered SL/TP orders on the exchange.
         self._cleanup_orphan_orders()
 
+        # Close any exchange positions that the bot doesn't track (orphans
+        # from crashed sessions where the state was saved after closing the
+        # trade internally but the exchange position survived).
+        self._close_orphan_positions()
+
+        # Re-verify that every restored trade still has its SL and TP orders
+        # on the exchange. Binance Demo silently evicts orders, so after a
+        # restart the saved order IDs may be stale.
+        self._verify_trade_orders()
+
         # Track the last PRIMARY_TF candle timestamp per symbol so we
         # increment candles_since_formed exactly once per candle close,
         # not once per 10-second polling tick (the original bug).
@@ -435,15 +445,24 @@ class FVGBot:
             tp_override = None
             if TP_MODE == "structure":
                 df_primary  = self._fetch(symbol, PRIMARY_TF, FVG_LOOKBACK)
+                # Use c_close (current price) for R:R — that's where the
+                # market order will actually fill, NOT gap_mid.
+                realistic_entry = c_close
+                realistic_sl_dist = abs(realistic_entry - fvg.sl_price)
+                if realistic_sl_dist <= 0:
+                    continue
                 tp_override = find_structure_tp(
-                    df_primary, fvg.direction, entry, sl_dist, MIN_RR
+                    df_primary, fvg.direction, realistic_entry,
+                    realistic_sl_dist, MIN_RR
                 )
-                actual_rr = abs(tp_override - entry) / sl_dist
+                # Directional R:R against realistic fill price
+                sign = 1 if fvg.direction == "bullish" else -1
+                actual_rr = (tp_override - realistic_entry) * sign / realistic_sl_dist
                 if actual_rr + 1e-6 < MIN_RR:
                     if not getattr(fvg, "_logged_no_target", False):
                         logger.info(
                             f"No structure target ≥ {MIN_RR}R for {fvg.symbol} "
-                            f"(best={actual_rr:.2f}R) — will retry"
+                            f"(best={actual_rr:.2f}R, price={c_close:.4f}) — will retry"
                         )
                         fvg._logged_no_target = True
                     else:
@@ -597,6 +616,140 @@ class FVGBot:
         if cancelled:
             logger.info(f"Cancelled {cancelled} orphan reduceOnly order(s) at startup")
 
+    # ── Close orphan positions ────────────────
+    def _close_orphan_positions(self) -> None:
+        """
+        At startup, fetch ALL open positions from the exchange.  Close any
+        position whose symbol is NOT tracked by self.open_trades.  These
+        are ghosts from crashed sessions where the bot closed the trade
+        internally but the exchange position survived.
+        """
+        tracked_symbols = {t.symbol for t in self.open_trades}
+        closed = 0
+
+        # Fetch positions per configured symbol (fetch_positions_safe requires a symbol)
+        all_positions = []
+        for sym in SYMBOLS:
+            all_positions.extend(fetch_positions_safe(self.exchange, sym))
+
+        for pos in all_positions:
+            sym  = pos.get("symbol")
+            side = pos.get("side")
+            # Use _read_position_size pattern to avoid falsy-zero bug
+            contracts = pos.get("contracts")
+            amt = abs(float(contracts)) if contracts is not None else 0.0
+            if amt == 0 or not sym or not side:
+                continue
+
+            # Normalise symbol format (exchange may return "XRP/USDT:USDT")
+            clean_sym = sym.split(":")[0] if ":" in sym else sym
+            if clean_sym in tracked_symbols:
+                continue
+
+            # This is an orphan — close it at market
+            close_side = "sell" if side == "long" else "buy"
+            logger.warning(
+                f"ORPHAN POSITION: {clean_sym} {side} qty={amt} — "
+                f"not tracked by bot. Closing at market."
+            )
+            try:
+                self.exchange.create_order(
+                    symbol=clean_sym, type="market", side=close_side,
+                    amount=amt, params={"reduceOnly": True}
+                )
+                # Also cancel any orders on this symbol
+                _cancel_all_for_symbol(self.exchange, clean_sym)
+                closed += 1
+            except Exception as e:
+                logger.error(f"Failed to close orphan {clean_sym}: {e}")
+
+        if closed:
+            logger.info(f"Closed {closed} orphan position(s) at startup")
+
+    # ── Verify SL/TP orders for restored trades ──
+    def _verify_trade_orders(self) -> None:
+        """
+        For each restored open trade, verify that SL and TP orders still
+        exist on the exchange.  Binance Demo silently evicts conditional
+        orders, so saved order IDs may be stale after a restart.
+        Re-places any missing orders.
+        """
+        for trade in self.open_trades:
+            sl_side = "sell" if trade.direction == "long" else "buy"
+
+            # ── Check SL ──
+            sl_ok = False
+            if trade.sl_order_id:
+                try:
+                    sl_status = self.exchange.fetch_order(
+                        str(trade.sl_order_id), trade.symbol
+                    )
+                    sl_ok = sl_status.get("status") == "open"
+                except Exception:
+                    sl_ok = False
+
+            if not sl_ok:
+                # Cancel ALL orders for this symbol first to prevent duplicates.
+                # The old SL may still exist as an algo order even though
+                # fetch_order returned -2013.
+                _cancel_all_for_symbol(self.exchange, trade.symbol)
+                logger.warning(
+                    f"SL order missing for {trade.symbol} — re-placing "
+                    f"stop_market @ {trade.sl_price:.6f}"
+                )
+                try:
+                    sl_order = self.exchange.create_order(
+                        symbol=trade.symbol, type="stop_market",
+                        side=sl_side, amount=trade.qty_remaining,
+                        params={"stopPrice": trade.sl_price, "reduceOnly": True}
+                    )
+                    trade.sl_order_id = sl_order["id"]
+                    trade.order_ids.append(sl_order["id"])
+                    logger.info(
+                        f"Re-placed SL for {trade.symbol}: "
+                        f"id={sl_order['id']}"
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to re-place SL for {trade.symbol}: {e}")
+
+            # ── Check TP ──
+            tp_ok = False
+            if trade.tp_order_id:
+                try:
+                    tp_status = self.exchange.fetch_order(
+                        str(trade.tp_order_id), trade.symbol
+                    )
+                    tp_ok = tp_status.get("status") == "open"
+                except Exception:
+                    tp_ok = False
+
+            if not tp_ok and trade.tp_prices:
+                tp_price = trade.tp_prices[0]
+                logger.warning(
+                    f"TP order missing for {trade.symbol} — re-placing "
+                    f"limit @ {tp_price:.6f}"
+                )
+                try:
+                    tp_order = self.exchange.create_order(
+                        symbol=trade.symbol, type="limit",
+                        side=sl_side, amount=trade.qty_remaining,
+                        price=tp_price,
+                        params={"reduceOnly": True}
+                    )
+                    trade.tp_order_id = tp_order["id"]
+                    trade.order_ids.append(tp_order["id"])
+                    logger.info(
+                        f"Re-placed TP for {trade.symbol}: "
+                        f"id={tp_order['id']} @ {tp_price:.6f}"
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to re-place TP for {trade.symbol}: {e}")
+
+        # Save updated order IDs
+        if self.open_trades:
+            save_state(STATE_FILE, self.open_trades, self.active_fvgs,
+                       self.trades_today, self.last_trade_date)
+
     # ── Exchange-side exit polling (STRUCTURE mode) ──
     def _poll_exit(self, trade: Trade):
         """
@@ -610,19 +763,70 @@ class FVGBot:
           1. ORDER STATUS — check if the SL or TP order itself shows as filled.
           2. POSITION SIZE — if position is zero/gone, one of the orders fired.
         """
-        # ── Method 0: Software SL/TP failsafe ──
-        # On Binance Demo, stop_market and limit orders get silently evicted.
-        # Without this check, price can run far beyond SL with no protection.
-        # Uses cached candle data (already fetched this cycle) for zero API cost.
+        # ── Method 0: Check exchange order status FIRST ──
+        # This is the primary exit detection. If an exchange order filled,
+        # we know the exact fill price. Only fall back to software failsafe
+        # if exchange orders are confirmed missing/evicted.
         current_price = 0.0
-        cached_df = self._cycle_cache.get(f"{trade.symbol}_{PRIMARY_TF}")
+        cached_df = self._cycle_cache.get((trade.symbol, PRIMARY_TF))
         if cached_df is not None and not cached_df.empty:
             current_price = float(cached_df["close"].iloc[-1])
         else:
-            # No cached data — fetch ticker as fallback
             current_price = get_ticker_price(self.exchange, trade.symbol)
 
-        if current_price > 0:
+        tp_filled_by_order, sl_filled_by_order = False, False
+        order_fill_price = None
+        sl_order_alive, tp_order_alive = False, False
+
+        if trade.tp_order_id:
+            try:
+                o = self.exchange.fetch_order(trade.tp_order_id, trade.symbol)
+                status = o.get("status")
+                if status in ("closed", "filled") or \
+                   float(o.get("filled") or 0) >= trade.qty * 0.5:
+                    tp_filled_by_order = True
+                    order_fill_price = float(
+                        o.get("average") or o.get("price") or trade.tp_prices[0])
+                    logger.info(
+                        f"TP order FILLED for {trade.symbol} @ {order_fill_price:.4f}")
+                elif status == "open":
+                    tp_order_alive = True
+            except Exception as e:
+                err_msg = str(e).lower()
+                if "-2013" not in err_msg and "does not exist" not in err_msg:
+                    logger.debug(f"fetch_order(tp) for {trade.symbol}: {e}")
+
+        if not tp_filled_by_order and trade.sl_order_id:
+            try:
+                o = self.exchange.fetch_order(trade.sl_order_id, trade.symbol)
+                status = o.get("status")
+                if status in ("closed", "filled") or \
+                   float(o.get("filled") or 0) >= trade.qty * 0.5:
+                    sl_filled_by_order = True
+                    order_fill_price = float(
+                        o.get("average") or o.get("price") or trade.sl_price)
+                    logger.info(
+                        f"SL order FILLED for {trade.symbol} @ {order_fill_price:.4f}")
+                elif status == "open":
+                    sl_order_alive = True
+            except Exception as e:
+                err_msg = str(e).lower()
+                if "-2013" not in err_msg and "does not exist" not in err_msg:
+                    logger.debug(f"fetch_order(sl) for {trade.symbol}: {e}")
+
+        if tp_filled_by_order or sl_filled_by_order:
+            _cancel_all_for_symbol(
+                self.exchange, trade.symbol,
+                sl_id=trade.sl_order_id, tp_id=trade.tp_order_id
+            )
+            logger.info(f"Cleanup done for {trade.symbol} (order fill detected)")
+            reason = "take_profit_structure" if tp_filled_by_order else "stop_loss"
+            return float(order_fill_price), reason
+
+        # ── Software SL/TP failsafe ──
+        # ONLY fires if exchange orders are MISSING (evicted by Demo).
+        # If exchange orders are alive, trust them — don't race.
+        if current_price > 0 and not (sl_order_alive and tp_order_alive):
             sl_breached = (
                 (trade.direction == "long"  and current_price <= trade.sl_price) or
                 (trade.direction == "short" and current_price >= trade.sl_price)
@@ -633,90 +837,49 @@ class FVGBot:
             ) if trade.tp_prices else False
 
             if sl_breached or tp_breached:
-                reason = "stop_loss" if sl_breached else "take_profit_structure"
-                level  = trade.sl_price if sl_breached else trade.tp_prices[0]
-                logger.warning(
-                    f"SOFTWARE {'SL' if sl_breached else 'TP'} TRIGGERED for "
-                    f"{trade.symbol}: price {current_price:.4f} breached "
-                    f"{'SL' if sl_breached else 'TP'} {level:.4f}. "
-                    f"Market-closing now."
-                )
-                # Cancel all exchange orders and close at market
-                try:
-                    self.exchange.cancel_all_orders(trade.symbol)
-                except Exception:
+                # Verify the relevant exchange order is actually missing
+                order_missing = (sl_breached and not sl_order_alive) or \
+                                (tp_breached and not tp_order_alive)
+                if not order_missing:
+                    # Exchange order exists and should handle this — don't race
                     pass
-                close_side = "sell" if trade.direction == "long" else "buy"
-                try:
-                    close_order = self.exchange.create_order(
-                        symbol=trade.symbol, type="market",
-                        side=close_side, amount=trade.qty_remaining,
-                        params={"reduceOnly": True}
+                else:
+                    reason = "software_sl" if sl_breached else "software_tp"
+                    level  = trade.sl_price if sl_breached else trade.tp_prices[0]
+                    logger.warning(
+                        f"SOFTWARE {'SL' if sl_breached else 'TP'} TRIGGERED for "
+                        f"{trade.symbol}: price {current_price:.4f} breached "
+                        f"{'SL' if sl_breached else 'TP'} {level:.4f} "
+                        f"(exchange order MISSING). Market-closing now."
                     )
-                    fill = float(
-                        close_order.get("average")
-                        or close_order.get("price")
-                        or current_price
-                    )
-                    return fill, reason
-                except Exception as e:
-                    logger.warning(f"Software {reason} market close failed: {e}")
-                    # Position may already be closed by exchange SL — check position
                     try:
-                        positions = fetch_positions_safe(self.exchange, trade.symbol)
-                        pos_amt = 0.0
-                        for p in positions:
-                            if p.get("symbol") == trade.symbol:
-                                pos_amt = abs(float(p.get("contracts") or 0))
-                        if pos_amt < trade.qty * 0.01:
-                            logger.info(f"Position already closed for {trade.symbol}, using price {current_price:.4f}")
-                            return current_price, reason
+                        self.exchange.cancel_all_orders(trade.symbol)
                     except Exception:
                         pass
-                    # Fall through to normal checks
-        tp_filled_by_order, sl_filled_by_order = False, False
-        order_fill_price = None
-
-        if trade.tp_order_id:
-            try:
-                o = self.exchange.fetch_order(trade.tp_order_id, trade.symbol)
-                if o.get("status") in ("closed", "filled") or \
-                   float(o.get("filled") or 0) >= trade.qty * 0.5:
-                    tp_filled_by_order = True
-                    order_fill_price = float(
-                        o.get("average") or o.get("price") or trade.tp_prices[0])
-                    logger.info(
-                        f"TP order FILLED for {trade.symbol} @ {order_fill_price:.4f}")
-            except Exception as e:
-                err_msg = str(e).lower()
-                if "-2013" not in err_msg and "does not exist" not in err_msg:
-                    logger.debug(f"fetch_order(tp) for {trade.symbol}: {e}")
-
-        if not tp_filled_by_order and trade.sl_order_id:
-            try:
-                o = self.exchange.fetch_order(trade.sl_order_id, trade.symbol)
-                if o.get("status") in ("closed", "filled") or \
-                   float(o.get("filled") or 0) >= trade.qty * 0.5:
-                    sl_filled_by_order = True
-                    order_fill_price = float(
-                        o.get("average") or o.get("price") or trade.sl_price)
-                    logger.info(
-                        f"SL order FILLED for {trade.symbol} @ {order_fill_price:.4f}")
-            except Exception as e:
-                err_msg = str(e).lower()
-                if "-2013" not in err_msg and "does not exist" not in err_msg:
-                    logger.debug(f"fetch_order(sl) for {trade.symbol}: {e}")
-
-        if tp_filled_by_order or sl_filled_by_order:
-            # Order filled — cancel the counterpart
-            _cancel_all_for_symbol(
-                self.exchange, trade.symbol,
-                sl_id=trade.sl_order_id, tp_id=trade.tp_order_id
-            )
-            logger.info(f"Cleanup done for {trade.symbol} (order fill detected)")
-
-            reason = "take_profit_structure" if tp_filled_by_order else "stop_loss"
-            return float(order_fill_price), reason
+                    close_side = "sell" if trade.direction == "long" else "buy"
+                    try:
+                        close_order = self.exchange.create_order(
+                            symbol=trade.symbol, type="market",
+                            side=close_side, amount=trade.qty_remaining,
+                            params={"reduceOnly": True}
+                        )
+                        fill = float(
+                            close_order.get("average")
+                            or close_order.get("price")
+                            or current_price
+                        )
+                        return fill, reason
+                    except Exception as e:
+                        logger.warning(f"Software {reason} market close failed: {e}")
+                        try:
+                            positions = fetch_positions_safe(self.exchange, trade.symbol)
+                            pos_amt = _read_position_size(positions, trade.symbol)
+                            if pos_amt < trade.qty * 0.01:
+                                logger.info(f"Position already closed for {trade.symbol}")
+                                return current_price, reason
+                        except Exception:
+                            pass
+                            pass
 
         # ── Method 2: Position-based fallback ──
         try:

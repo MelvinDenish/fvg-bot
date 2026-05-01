@@ -202,6 +202,20 @@ def open_trade(exchange: ccxt.binance,
         else [fvg.tp_price(entry, mult) for mult in TP_MULTIPLIERS]
     )
 
+    # Hard R:R safety gate — last line of defense before placing orders.
+    # Even if the caller's check passed, reject if TP is too close to entry
+    # or on the WRONG SIDE (e.g. TP below entry for a long).
+    sl_dist = abs(entry - sl)
+    if sl_dist > 0 and tp_prices:
+        sign = 1 if fvg.direction == "bullish" else -1
+        actual_rr = (tp_prices[0] - entry) * sign / sl_dist
+        if actual_rr < MIN_RR:
+            logger.warning(
+                f"REJECTED {fvg.symbol}: TP {tp_prices[0]:.6f} gives R:R "
+                f"{actual_rr:.2f} < {MIN_RR} (entry={entry:.6f} SL={sl:.6f})"
+            )
+            return None
+
     qty, risk, leverage = calculate_position_size(balance, entry, sl)
     if qty == 0:
         logger.warning(f"Position size 0 for {fvg.symbol} — skipping")
@@ -244,6 +258,33 @@ def open_trade(exchange: ccxt.binance,
     side    = "buy"  if direction == "long"  else "sell"
     sl_side = "sell" if direction == "long"  else "buy"
 
+    # ── Pre-trade price check (BEFORE any API calls) ──
+    # Check drift and SL-breach FIRST to avoid wasting API calls on
+    # cancel_all → margin_mode → leverage when the trade will be skipped.
+    current_price = get_ticker_price(exchange, fvg.symbol)
+    if current_price > 0:
+        drift_pct = abs(current_price - entry) / entry
+        if drift_pct > 0.005:
+            logger.warning(
+                f"SKIPPED {fvg.symbol}: market price {current_price:.4f} has "
+                f"drifted {drift_pct*100:.2f}% from FVG entry {entry:.4f}. "
+                f"Not placing order."
+            )
+            return "SKIP"
+
+        sl_already_breached = (
+            (direction == "long"  and current_price <= sl) or
+            (direction == "short" and current_price >= sl)
+        )
+        if sl_already_breached:
+            logger.warning(
+                f"SKIPPED {fvg.symbol}: price {current_price:.4f} already "
+                f"beyond SL {sl:.4f} — trade would instantly stop out."
+            )
+            return "SKIP"
+    else:
+        logger.warning(f"Could not fetch ticker for {fvg.symbol} — skipping pre-trade check")
+
     # ── Step 0: Cancel ALL existing orders for this symbol ──
     # MUST happen BEFORE set_margin_mode — Binance error -4067 rejects margin
     # mode changes while open orders exist on the symbol.
@@ -256,14 +297,26 @@ def open_trade(exchange: ccxt.binance,
     except Exception as e:
         logger.debug(f"Pre-trade cancel_all_orders({fvg.symbol}): {e}")
 
+    # Also cancel algo/conditional orders (stop_market) — Binance Demo stores
+    # these separately and cancel_all_orders does NOT touch them.
+    bsym = fvg.symbol.replace("/", "")
+    try:
+        algo_orders = exchange.fapiPrivateGetOpenAlgoOrders()
+        for ao in algo_orders:
+            if ao.get("symbol") == bsym:
+                try:
+                    exchange.fapiPrivateDeleteAlgoOrder({"algoId": ao["algoId"]})
+                    logger.info(f"Pre-trade: cancelled algo order {ao['algoId']} on {fvg.symbol}")
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
     # Set margin mode (isolated/cross) and leverage before opening the position.
-    # Isolated mode limits loss to the position's margin only — prevents a single
-    # bad trade from liquidating the entire account (which cross mode allows).
     try:
         exchange.set_margin_mode(MARGIN_MODE, fvg.symbol)
         logger.info(f"Margin mode set to {MARGIN_MODE.upper()} on {fvg.symbol}")
     except Exception as e:
-        # Binance returns -4046 if margin mode is already set — safe to ignore.
         err = str(e)
         if "-4046" in err or "No need to change" in err:
             pass
@@ -275,24 +328,6 @@ def open_trade(exchange: ccxt.binance,
         logger.info(f"Leverage set to {leverage}x on {fvg.symbol}")
     except Exception as e:
         logger.warning(f"set_leverage({leverage}, {fvg.symbol}) failed: {e}")
-
-    # ── Pre-trade price check ──
-    # A market order fills at current bid/ask, NOT at the historical gap_mid.
-    # If the market has drifted more than 0.5% from the FVG entry zone, don't
-    # even send the order — avoids the open→emergency-close churn that was
-    # causing infinite rejection loops when price moved away from the FVG.
-    current_price = get_ticker_price(exchange, fvg.symbol)
-    if current_price > 0:
-        drift_pct = abs(current_price - entry) / entry
-        if drift_pct > 0.005:
-            logger.warning(
-                f"SKIPPED {fvg.symbol}: market price {current_price:.4f} has "
-                f"drifted {drift_pct*100:.2f}% from FVG entry {entry:.4f}. "
-                f"Not placing order."
-            )
-            return "SKIP"
-    else:
-        logger.warning(f"Could not fetch ticker for {fvg.symbol} — skipping pre-trade check")
 
     # ── Step 1: Market entry ──
     pre_order_price = current_price if current_price > 0 else entry
@@ -340,6 +375,24 @@ def open_trade(exchange: ccxt.binance,
         )
         _emergency_close(exchange, fvg.symbol, sl_side, qty)
         return None
+
+    # ── Post-fill R:R re-validation ──
+    # The pre-trade R:R gate used gap_mid as entry, but the actual fill price
+    # may differ due to slippage. Re-check with the REAL entry price.
+    # Example: gap_mid=1.3686 gave 3.8R, but fill=1.3741 gives only 0.33R.
+    if tp_override is not None:
+        real_sl_dist = abs(trade.entry_price - sl)
+        if real_sl_dist > 0:
+            sign = 1 if direction == "long" else -1
+            real_rr = (tp_override - trade.entry_price) * sign / real_sl_dist
+            if real_rr < MIN_RR:
+                logger.error(
+                    f"REJECTED {fvg.symbol}: post-fill R:R {real_rr:.2f} < {MIN_RR} "
+                    f"(planned entry {entry:.4f}, filled {trade.entry_price:.4f}, "
+                    f"TP {tp_override:.4f}, SL {sl:.4f}). Closing immediately."
+                )
+                _emergency_close(exchange, fvg.symbol, sl_side, qty)
+                return None
 
     # ── Step 2: Stop-loss ──
     # If this fails, the position is naked. Close it immediately to avoid
