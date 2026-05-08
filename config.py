@@ -20,7 +20,7 @@ MARKET_TYPE  = os.getenv("MARKET_TYPE", "future")                 # "future" | "
 #   5m: XRP PF1.45 S2.99 | BNB PF1.52 S2.36 | ETH PF1.36 S2.20
 # 1m beats 5m on every quality metric over 400 days.
 # Recent 100d drawdown affects BOTH TFs equally (market regime).
-SYMBOLS    = ["XRP/USDT", "ETH/USDT", "BNB/USDT"]
+SYMBOLS    = ["XRP/USDT", "ETH/USDT", "BNB/USDT", "DOGE/USDT"]
 PRIMARY_TF = "1m"       # FVG detection timeframe (1m > 5m on all pairs)
 ENTRY_TF   = "1m"       # entry precision / trade management
 HTF_TF     = "1h"       # higher-timeframe trend filter

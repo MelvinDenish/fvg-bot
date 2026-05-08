@@ -436,12 +436,9 @@ class FVGBot:
                 continue
 
             # Compute the ACTUAL TP that will be used and gate R:R against it.
-            # Matches backtest exactly: if R:R fails this cycle, the FVG stays
-            # waiting and we re-evaluate on the next cycle (a new candle may
-            # have formed a swing pivot that pushes the structure target out).
-            #
-            # Log INFO only the first time this FVG fails the gate, then DEBUG
-            # on subsequent attempts so we don't spam the log every 10s.
+            # Uses NET R:R (after fees) — matches backtest_net.py exactly.
+            # If R:R fails this cycle, the FVG stays waiting and we re-evaluate
+            # on the next cycle (a new candle may form a swing pivot).
             tp_override = None
             if TP_MODE == "structure":
                 df_primary  = self._fetch(symbol, PRIMARY_TF, FVG_LOOKBACK)
@@ -455,19 +452,42 @@ class FVGBot:
                     df_primary, fvg.direction, realistic_entry,
                     realistic_sl_dist, MIN_RR
                 )
-                # Directional R:R against realistic fill price
+                # NET R:R gate: estimate qty + fees, then check net win/loss ratio
                 sign = 1 if fvg.direction == "bullish" else -1
-                actual_rr = (tp_override - realistic_entry) * sign / realistic_sl_dist
-                if actual_rr + 1e-6 < MIN_RR:
+                tp_dist_gross = (tp_override - realistic_entry) * sign
+
+                # Estimate position size for fee calculation
+                from order_manager import calculate_position_size
+                est_qty, _, _ = calculate_position_size(
+                    self._cached_balance, realistic_entry, fvg.sl_price
+                )
+                if est_qty <= 0:
+                    continue
+
+                fee_rate = 0.0005  # 0.05% taker
+                notional = est_qty * realistic_entry
+                entry_fee = notional * fee_rate
+                exit_fee_tp = est_qty * tp_override * fee_rate
+                exit_fee_sl = est_qty * fvg.sl_price * fee_rate
+                total_fee_win  = entry_fee + exit_fee_tp
+                total_fee_loss = entry_fee + exit_fee_sl
+
+                net_win  = est_qty * tp_dist_gross - total_fee_win
+                net_loss = est_qty * realistic_sl_dist + total_fee_loss
+                if net_loss <= 0:
+                    net_loss = 0.001
+
+                net_rr = net_win / net_loss
+                if net_rr + 1e-6 < MIN_RR:
                     if not getattr(fvg, "_logged_no_target", False):
                         logger.info(
-                            f"No structure target ≥ {MIN_RR}R for {fvg.symbol} "
-                            f"(best={actual_rr:.2f}R, price={c_close:.4f}) — will retry"
+                            f"No structure target ≥ {MIN_RR}R NET for {fvg.symbol} "
+                            f"(net_rr={net_rr:.2f}, price={c_close:.4f}) — will retry"
                         )
                         fvg._logged_no_target = True
                     else:
                         logger.debug(
-                            f"R:R {actual_rr:.2f} < {MIN_RR} for {fvg.symbol}"
+                            f"Net R:R {net_rr:.2f} < {MIN_RR} for {fvg.symbol}"
                         )
                     continue
 

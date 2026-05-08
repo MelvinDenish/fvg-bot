@@ -11002,3 +11002,95 @@ KeyError: 'high'
 2026-05-08 11:28:38  INFO      No structure target ≥ 4.1R for ETH/USDT (best=-0.00R, price=2289.3000) — will retry
 2026-05-08 11:28:48  INFO      New FVG: FVG(ETH/USDT 1m BEARISH | gap=[2278.9900-2282.0100] | SL=2283.1865 | score=0.69 | waiting)
 2026-05-08 11:28:48  INFO      FVG invalidated: FVG(ETH/USDT 1m BULLISH | gap=[2286.7600-2289.1400] | SL=2285.8927 | score=0.94 | invalidated)
+2026-05-08 11:29:10  INFO      FVG invalidated: FVG(XRP/USDT 1m BEARISH | gap=[1.3847-1.3861] | SL=1.3865 | score=0.74 | invalidated)
+2026-05-08 11:29:10  INFO      FVG invalidated: FVG(ETH/USDT 1m BEARISH | gap=[2278.9900-2282.0100] | SL=2283.1865 | score=0.69 | invalidated)
+2026-05-08 11:29:10  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[638.4100-639.2400] | SL=639.3879 | score=0.73 | waiting)
+2026-05-08 11:29:10  INFO      No structure target ≥ 4.1R for BNB/USDT (best=-0.00R, price=638.3900) — will retry
+2026-05-08 11:31:07  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[637.3400-638.3100] | SL=638.4477 | score=0.69 | waiting)
+2026-05-08 11:31:07  INFO      No structure target ≥ 4.1R for BNB/USDT (best=-0.00R, price=637.3400) — will retry
+2026-05-08 11:31:17  INFO      New FVG: FVG(XRP/USDT 1m BEARISH | gap=[1.3806-1.3830] | SL=1.3834 | score=0.74 | waiting)
+2026-05-08 11:31:17  INFO      No structure target ≥ 4.1R for XRP/USDT (best=-0.00R, price=1.3804) — will retry
+2026-05-08 11:31:17  INFO      New FVG: FVG(ETH/USDT 1m BEARISH | gap=[2272.6800-2275.2000] | SL=2275.7451 | score=0.55 | waiting)
+2026-05-08 11:31:17  INFO      No structure target ≥ 4.1R for ETH/USDT (best=-0.00R, price=2270.2800) — will retry
+2026-05-08 11:31:28  INFO      FVG invalidated: FVG(XRP/USDT 1m BEARISH | gap=[1.3806-1.3830] | SL=1.3834 | score=0.74 | invalidated)
+2026-05-08 11:32:00  INFO      FVG invalidated: FVG(ETH/USDT 1m BEARISH | gap=[2272.6800-2275.2000] | SL=2275.7451 | score=0.55 | invalidated)
+2026-05-08 11:33:14  INFO      New FVG: FVG(BNB/USDT 1m BULLISH | gap=[637.3400-637.9900] | SL=637.1625 | score=0.55 | waiting)
+2026-05-08 11:33:14  INFO      No structure target ≥ 4.1R for BNB/USDT (best=0.00R, price=637.9900) — will retry
+2026-05-08 11:34:40  INFO      FVG invalidated: FVG(BNB/USDT 1m BEARISH | gap=[637.3400-638.3100] | SL=638.4477 | score=0.69 | invalidated)
+2026-05-08 11:39:05  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 11:39:27  INFO      FVG invalidated: FVG(BNB/USDT 1m BULLISH | gap=[637.3400-637.9900] | SL=637.1625 | score=0.55 | invalidated)
+2026-05-08 11:40:09  INFO      New FVG: FVG(ETH/USDT 1m BEARISH | gap=[2270.1800-2272.7300] | SL=2273.3146 | score=0.58 | waiting)
+2026-05-08 11:40:09  INFO      No structure target ≥ 4.1R for ETH/USDT (best=-0.00R, price=2270.1700) — will retry
+2026-05-08 11:40:09  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[636.6500-637.9100] | SL=638.7577 | score=0.48 | waiting)
+2026-05-08 11:40:09  INFO      No structure target ≥ 4.1R for BNB/USDT (best=-0.00R, price=636.6500) — will retry
+2026-05-08 11:40:20  INFO      FVG invalidated: FVG(ETH/USDT 1m BEARISH | gap=[2270.1800-2272.7300] | SL=2273.3146 | score=0.58 | invalidated)
+2026-05-08 11:49:43  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 11:56:08  INFO      New FVG: FVG(XRP/USDT 1m BEARISH | gap=[1.3778-1.3794] | SL=1.3797 | score=0.57 | waiting)
+2026-05-08 11:56:08  INFO      No structure target ≥ 4.1R for XRP/USDT (best=-0.00R, price=1.3775) — will retry
+2026-05-08 11:56:18  INFO      FVG invalidated: FVG(XRP/USDT 1m BEARISH | gap=[1.3778-1.3794] | SL=1.3797 | score=0.57 | invalidated)
+2026-05-08 12:00:24  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 12:02:10  INFO      Shutdown signal received — stopping bot...
+2026-05-08 12:02:10  INFO      Bot stopped cleanly
+2026-05-08 12:02:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 12:02:45  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-05-08 12:02:45  INFO      ============================================================
+2026-05-08 12:02:45  INFO        FVG WebSocket Bot starting
+2026-05-08 12:02:45  INFO        Mode:    DEMO
+2026-05-08 12:02:45  INFO        Symbols: XRP/USDT, ETH/USDT, BNB/USDT
+2026-05-08 12:02:45  INFO        Streams: 1m kline per symbol
+2026-05-08 12:02:45  INFO        R:R min: 4.1  |  TP mode: structure
+2026-05-08 12:02:45  INFO        Risk:    0.5%  |  Max open: 3
+2026-05-08 12:02:45  INFO      ============================================================
+2026-05-08 12:02:45  WARNING   Balance fetch failed: 'coroutine' object has no attribute 'get'
+2026-05-08 12:02:47  INFO      New FVG: FVG(XRP/USDT 1m BEARISH | gap=[1.3806-1.3830] | SL=1.3834 | score=0.97 | waiting)
+2026-05-08 12:02:47  INFO      New FVG: FVG(XRP/USDT 1m BEARISH | gap=[1.3847-1.3861] | SL=1.3865 | score=0.56 | waiting)
+2026-05-08 12:02:47  INFO      Booted XRP/USDT — 100 seed candles
+2026-05-08 12:02:47  INFO      New FVG: FVG(ETH/USDT 1m BEARISH | gap=[2272.6800-2275.2000] | SL=2275.7451 | score=0.67 | waiting)
+2026-05-08 12:02:47  INFO      New FVG: FVG(ETH/USDT 1m BEARISH | gap=[2278.9900-2282.0100] | SL=2283.1865 | score=0.70 | waiting)
+2026-05-08 12:02:47  INFO      Booted ETH/USDT — 100 seed candles
+2026-05-08 12:02:47  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[636.6500-637.9100] | SL=638.7577 | score=0.54 | waiting)
+2026-05-08 12:02:47  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[637.3400-638.3100] | SL=638.4477 | score=0.69 | waiting)
+2026-05-08 12:02:47  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[638.4100-639.2400] | SL=639.3879 | score=0.78 | waiting)
+2026-05-08 12:02:48  INFO      Booted BNB/USDT — 100 seed candles
+2026-05-08 12:02:48  INFO      Subscribing to XRP/USDT 1m kline stream
+2026-05-08 12:02:48  INFO      Subscribing to ETH/USDT 1m kline stream
+2026-05-08 12:02:48  INFO      Subscribing to BNB/USDT 1m kline stream
+2026-05-08 12:03:53  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 12:04:53  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 12:05:07  INFO      Connected to Binance FUTURE DEMO TRADING (https://demo-fapi.binance.com)
+2026-05-08 12:05:07  INFO      ============================================================
+2026-05-08 12:05:07  INFO        FVG WebSocket Bot starting
+2026-05-08 12:05:07  INFO        Mode:    DEMO
+2026-05-08 12:05:07  INFO        Symbols: XRP/USDT, ETH/USDT, BNB/USDT
+2026-05-08 12:05:07  INFO        Streams: 1m kline per symbol
+2026-05-08 12:05:07  INFO        R:R min: 4.1  |  TP mode: structure
+2026-05-08 12:05:07  INFO        Risk:    0.5%  |  Max open: 3
+2026-05-08 12:05:07  INFO      ============================================================
+2026-05-08 12:05:09  INFO      Booted XRP/USDT — 100 seed candles
+2026-05-08 12:05:09  INFO      New FVG: FVG(ETH/USDT 1m BEARISH | gap=[2272.6800-2275.2000] | SL=2275.7451 | score=0.66 | waiting)
+2026-05-08 12:05:09  INFO      New FVG: FVG(ETH/USDT 1m BEARISH | gap=[2278.9900-2282.0100] | SL=2283.1865 | score=0.70 | waiting)
+2026-05-08 12:05:10  INFO      Booted ETH/USDT — 100 seed candles
+2026-05-08 12:05:10  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[636.6500-637.9100] | SL=638.7577 | score=0.54 | waiting)
+2026-05-08 12:05:10  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[637.3400-638.3100] | SL=638.4477 | score=0.69 | waiting)
+2026-05-08 12:05:10  INFO      New FVG: FVG(BNB/USDT 1m BEARISH | gap=[638.4100-639.2400] | SL=639.3879 | score=0.82 | waiting)
+2026-05-08 12:05:10  INFO      Booted BNB/USDT — 100 seed candles
+2026-05-08 12:05:10  INFO      Subscribing to XRP/USDT 1m kline stream
+2026-05-08 12:05:10  INFO      Subscribing to ETH/USDT 1m kline stream
+2026-05-08 12:05:10  INFO      Subscribing to BNB/USDT 1m kline stream
+2026-05-08 12:15:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 12:25:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 12:35:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 12:45:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 12:55:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 13:05:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 13:15:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 13:25:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 13:35:10  INFO      SUMMARY | Closed=0 | Wins=0 | Win%=0.0% | Total P&L=$0.00
+2026-05-08 13:42:45  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 13:43:25  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 13:43:25  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 13:43:25  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 13:43:26  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 13:43:26  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 13:43:26  INFO      Shutdown signal — stopping WebSocket bot...
+2026-05-08 13:43:26  INFO      Shutdown signal — stopping WebSocket bot...

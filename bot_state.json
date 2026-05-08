@@ -48,70 +48,8 @@
         "score": 0.689
       }
     ],
-    "BNB/USDT": [
-      {
-        "symbol": "BNB/USDT",
-        "timeframe": "1m",
-        "direction": "bullish",
-        "gap_high": 637.99,
-        "gap_low": 637.34,
-        "sl_price": 637.162542,
-        "formed_at": "2026-05-08T06:03:00+00:00",
-        "formed_index": 99,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 0,
-        "last_candle_time": "2026-05-08T06:03:00+00:00",
-        "score": 0.553
-      },
-      {
-        "symbol": "BNB/USDT",
-        "timeframe": "1m",
-        "direction": "bearish",
-        "gap_high": 638.31,
-        "gap_low": 637.34,
-        "sl_price": 638.447664,
-        "formed_at": "2026-05-08T06:01:00+00:00",
-        "formed_index": 99,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 2,
-        "last_candle_time": "2026-05-08T06:03:00+00:00",
-        "score": 0.694
-      },
-      {
-        "symbol": "BNB/USDT",
-        "timeframe": "1m",
-        "direction": "bearish",
-        "gap_high": 639.24,
-        "gap_low": 638.41,
-        "sl_price": 639.387852,
-        "formed_at": "2026-05-08T05:59:00+00:00",
-        "formed_index": 99,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 4,
-        "last_candle_time": "2026-05-08T06:03:00+00:00",
-        "score": 0.729
-      }
-    ],
-    "ETH/USDT": [
-      {
-        "symbol": "ETH/USDT",
-        "timeframe": "1m",
-        "direction": "bearish",
-        "gap_high": 2289.97,
-        "gap_low": 2287.31,
-        "sl_price": 2290.437996,
-        "formed_at": "2026-05-07T23:18:00+00:00",
-        "formed_index": 22,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 6,
-        "last_candle_time": "2026-05-08T06:03:00+00:00",
-        "score": 0.967
-      }
-    ],
+    "BNB/USDT": [],
+    "ETH/USDT": [],
     "XRP/USDT": [],
     "DOGE/USDT": [
       {
