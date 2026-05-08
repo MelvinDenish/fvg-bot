@@ -20,14 +20,14 @@ MARKET_TYPE  = os.getenv("MARKET_TYPE", "future")                 # "future" | "
 #   5m: XRP PF1.45 S2.99 | BNB PF1.52 S2.36 | ETH PF1.36 S2.20
 # 1m beats 5m on every quality metric over 400 days.
 # Recent 100d drawdown affects BOTH TFs equally (market regime).
-SYMBOLS    = ["XRP/USDT", "BNB/USDT", "ETH/USDT", "DOGE/USDT"]
+SYMBOLS    = ["XRP/USDT", "ETH/USDT", "BNB/USDT"]
 PRIMARY_TF = "1m"       # FVG detection timeframe (1m > 5m on all pairs)
 ENTRY_TF   = "1m"       # entry precision / trade management
 HTF_TF     = "1h"       # higher-timeframe trend filter
 
 # ── Risk management ───────────────────────────
 RISK_PCT        = 0.005   # 0.5% account risk per trade
-MIN_RR          = 3.1     # minimum reward-to-risk ratio
+MIN_RR          = 4.1     # minimum reward-to-risk ratio (4.1 beats 3.1 in all periods)
 MAX_TRADES_DAY  = 10      # max trades per symbol per day
 MAX_OPEN_TRADES = 3       # max simultaneously open positions
 MAX_CORRELATED  = 3       # max open altcoin positions (prevents stacking correlated risk)

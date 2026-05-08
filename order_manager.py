@@ -385,9 +385,13 @@ def open_trade(exchange: ccxt.binance,
         if real_sl_dist > 0:
             sign = 1 if direction == "long" else -1
             real_rr = (tp_override - trade.entry_price) * sign / real_sl_dist
-            if real_rr < MIN_RR:
+            # Allow 5% tolerance vs pre-entry check: micro-slippage between
+            # c_close and actual fill can shrink R:R slightly (e.g. 3.1 → 3.02).
+            # Don't waste entry+exit fees for borderline trades.
+            post_fill_min = MIN_RR * 0.95
+            if real_rr < post_fill_min:
                 logger.error(
-                    f"REJECTED {fvg.symbol}: post-fill R:R {real_rr:.2f} < {MIN_RR} "
+                    f"REJECTED {fvg.symbol}: post-fill R:R {real_rr:.2f} < {post_fill_min:.2f} "
                     f"(planned entry {entry:.4f}, filled {trade.entry_price:.4f}, "
                     f"TP {tp_override:.4f}, SL {sl:.4f}). Closing immediately."
                 )

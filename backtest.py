@@ -621,6 +621,15 @@ class Backtester:
                     if sl_dist == 0:
                         continue
 
+                    # SL-breach check (matches live bot order_manager):
+                    # If price is already past SL, trade is dead on arrival.
+                    sl_already_breached = (
+                        (is_long     and entry_slip <= sl) or
+                        (not is_long and entry_slip >= sl)
+                    )
+                    if sl_already_breached:
+                        continue
+
                     # TP selection by mode (anchored to slipped entry)
                     if self.tp_mode == "fixed":
                         tp = entry_slip + sl_dist * self.tp_multiplier * sign
@@ -632,12 +641,14 @@ class Backtester:
                     else:  # trailing | partial — initial 2R target
                         tp = entry_slip + sl_dist * 2.0 * sign
 
-                    # The rr gate only makes sense when TP is the actual exit
-                    # target (fixed, structure). For partial it's just the 50%
-                    # trigger; for trailing it's unused. Skip in those modes.
+                    # R:R gate with 5% tolerance (matches live bot post-fill gate).
+                    # The live bot allows MIN_RR * 0.95 at the post-fill stage to
+                    # avoid emergency-closing trades that barely missed due to
+                    # micro-slippage. Backtest mirrors this exactly.
                     if self.tp_mode in ("fixed", "structure"):
                         rr_sign = 1 if is_long else -1
-                        if (tp - entry_slip) * rr_sign / sl_dist < self.min_rr:
+                        post_fill_min = self.min_rr * 0.95
+                        if (tp - entry_slip) * rr_sign / sl_dist < post_fill_min:
                             continue
 
                     qty, risk_usdt = self._calc_qty(entry_slip, sl)

@@ -20,7 +20,7 @@ def get_exchange(testnet: bool = TESTNET) -> ccxt.binance:
         "options": {
             "defaultType": MARKET_TYPE,
             "adjustForTimeDifference": True,
-            "recvWindow": 15000,  # wider window for demo endpoint latency
+            "recvWindow": 30000,  # wider window for PC clock drift + demo latency
             # Skip endpoints that require permissions a futures-only / demo key lacks:
             #   - fetchCurrencies → sapi/capital/config (spot wallet)
             #   - fetchMarkets restricted to 'linear' → skips sapi/margin/allPairs
