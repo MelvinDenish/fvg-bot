@@ -41,6 +41,25 @@ def find_structure_tp(df: pd.DataFrame, direction: str,
     beyond the minimum R:R target. Falls back to 3R if no pivot found.
     Uses a 5-candle pivot window to filter noise.
     """
+    tps = find_structure_tps(df, direction, entry, sl_dist, min_rr, lookback)
+    if tps:
+        return tps[0]
+    return entry  # rr = 0 → guaranteed gate rejection
+
+
+def find_structure_tps(df: pd.DataFrame, direction: str,
+                       entry: float, sl_dist: float,
+                       min_rr: float = 0.0, lookback: int = 50) -> list[float]:
+    """
+    Return ALL swing pivots beyond min_rr, sorted nearest-to-farthest.
+
+    Bullish: returns swing highs above entry + sl_dist * min_rr, ascending.
+    Bearish: returns swing lows below entry - sl_dist * min_rr, descending.
+
+    This allows the caller to iterate through pivots and pick the first
+    one that passes the net-of-fees R:R gate, rather than being stuck
+    with only the nearest pivot (which may be too close to cover fees).
+    """
     window  = df.iloc[-lookback:] if len(df) >= lookback else df
     highs   = window["high"].values
     lows    = window["low"].values
@@ -55,14 +74,11 @@ def find_structure_tp(df: pd.DataFrame, direction: str,
             if lows[j] == min(lows[j - 2: j + 3]) and lows[j] < min_tp:
                 pivots.append(lows[j])
 
-    if pivots:
-        return min(pivots) if direction == "bullish" else max(pivots)
-    # No real swing exists ≥ min_rr away. Return a value BELOW min_rr so the
-    # caller's rr gate rejects the trade. Backtest proved that taking blind
-    # fallback trades at synthetic min_rr targets DESTROYS the strategy
-    # (PF 1.80 → 1.33, Sharpe 3.65 → 1.67) — those targets have no structural
-    # reason to be reached. Better to skip than to take blind shots.
-    return entry  # rr = 0 → guaranteed gate rejection
+    # Deduplicate and sort nearest-to-farthest
+    unique = sorted(set(pivots))
+    if direction == "bearish":
+        unique.reverse()
+    return unique
 
 
 # ── Trade dataclass ───────────────────────────

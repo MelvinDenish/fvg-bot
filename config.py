@@ -15,24 +15,22 @@ DRY_RUN      = os.getenv("DRY_RUN", "true").lower() == "true"    # log orders wi
 MARKET_TYPE  = os.getenv("MARKET_TYPE", "future")                 # "future" | "spot" — order_manager uses reduceOnly + stop_market (futures-only)
 
 # ── Trading pairs & timeframes ───────────────
-# Top 3 by quality from 400-day REALISTIC backtest (structure TP, 5x):
-#   1m: XRP PF1.55 S4.44 | BNB PF1.90 S3.49 | ETH PF1.52 S3.78
-#   5m: XRP PF1.45 S2.99 | BNB PF1.52 S2.36 | ETH PF1.36 S2.20
-# 1m beats 5m on every quality metric over 400 days.
-# Recent 100d drawdown affects BOTH TFs equally (market regime).
-SYMBOLS    = ["XRP/USDT", "ETH/USDT", "BNB/USDT", "DOGE/USDT"]
+# Backtest-validated rankings (400d, 1m, structure TP, RR 5.0):
+#   BNB  PF4.00 S6.25 DD-3.3% | XRP  PF3.14 S7.30 DD-4.7%
+#   ETH  PF2.41 S6.36 DD-6.6% | DOGE PF2.59 S5.21 DD-6.0%
+#   ADA  PF2.59 S5.18 DD-12%  | SOL  PF2.40 S4.17 DD-8.8%
+SYMBOLS    = ["BNB/USDT", "XRP/USDT", "ETH/USDT", "DOGE/USDT", "ADA/USDT", "SOL/USDT"]
 PRIMARY_TF = "1m"       # FVG detection timeframe (1m > 5m on all pairs)
 ENTRY_TF   = "1m"       # entry precision / trade management
 HTF_TF     = "1h"       # higher-timeframe trend filter
 
 # ── Risk management ───────────────────────────
 RISK_PCT        = 0.005   # 0.5% account risk per trade
-MIN_RR          = 4.1     # minimum reward-to-risk ratio (4.1 beats 3.1 in all periods)
+MIN_RR          = 5.0    # minimum NET reward-to-risk ratio after fees (higher = fewer but better trades)
 MAX_TRADES_DAY  = 10      # max trades per symbol per day
 MAX_OPEN_TRADES = 3       # max simultaneously open positions
-MAX_CORRELATED  = 3       # max open altcoin positions (prevents stacking correlated risk)
+MAX_CORRELATED  = 4       # max open altcoin positions (limits correlated DD stacking)
                            # BTC/USDT is excluded from this cap
-                           # Set to len(SYMBOLS) when all symbols are altcoins
 
 # ── Exchange minimums & leverage scaling ──────
 MIN_NOTIONAL_USDT = 50.0   # Binance USDT-M futures min notional per opening order

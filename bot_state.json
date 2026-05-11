@@ -1,54 +1,24 @@
 {
   "open_trades": [],
   "active_fvgs": {
-    "SOL/USDT": [
+    "SOL/USDT": [],
+    "BNB/USDT": [
       {
-        "symbol": "SOL/USDT",
-        "timeframe": "5m",
-        "direction": "bearish",
-        "gap_high": 84.09,
-        "gap_low": 83.99,
-        "sl_price": 84.126822,
-        "formed_at": "2026-05-01T05:20:00+00:00",
-        "formed_index": 90,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 2,
-        "last_candle_time": "2026-05-01T06:15:00+00:00",
-        "score": 0.417
-      },
-      {
-        "symbol": "SOL/USDT",
-        "timeframe": "5m",
+        "symbol": "BNB/USDT",
+        "timeframe": "1m",
         "direction": "bullish",
-        "gap_high": 84.09,
-        "gap_low": 83.8,
-        "sl_price": 83.763244,
-        "formed_at": "2026-05-01T05:10:00+00:00",
-        "formed_index": 88,
+        "gap_high": 652.56,
+        "gap_low": 651.53,
+        "sl_price": 651.379698,
+        "formed_at": "2026-05-11T09:07:00+00:00",
+        "formed_index": 99,
         "status": "waiting",
         "entry_price": null,
-        "candles_since_formed": 2,
-        "last_candle_time": "2026-05-01T06:15:00+00:00",
-        "score": 0.811
-      },
-      {
-        "symbol": "SOL/USDT",
-        "timeframe": "5m",
-        "direction": "bearish",
-        "gap_high": 84.09,
-        "gap_low": 83.95,
-        "sl_price": 84.16683,
-        "formed_at": "2026-05-01T03:40:00+00:00",
-        "formed_index": 70,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 2,
-        "last_candle_time": "2026-05-01T06:15:00+00:00",
-        "score": 0.689
+        "candles_since_formed": 7,
+        "last_candle_time": "2026-05-11T09:14:00+00:00",
+        "score": 0.686
       }
     ],
-    "BNB/USDT": [],
     "ETH/USDT": [],
     "XRP/USDT": [],
     "DOGE/USDT": [
@@ -56,66 +26,113 @@
         "symbol": "DOGE/USDT",
         "timeframe": "1m",
         "direction": "bullish",
-        "gap_high": 0.11098,
-        "gap_low": 0.11069,
-        "sl_price": 0.11062787,
-        "formed_at": "2026-05-04T14:17:00+00:00",
-        "formed_index": 87,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 0,
-        "last_candle_time": "2026-05-04T14:29:00+00:00",
-        "score": 0.901
-      },
-      {
-        "symbol": "DOGE/USDT",
-        "timeframe": "1m",
-        "direction": "bearish",
-        "gap_high": 0.11063,
-        "gap_low": 0.11051,
-        "sl_price": 0.11067213,
-        "formed_at": "2026-05-04T13:54:00+00:00",
+        "gap_high": 0.10972,
+        "gap_low": 0.10955,
+        "sl_price": 0.109558084,
+        "formed_at": "2026-05-11T09:09:00+00:00",
         "formed_index": 99,
         "status": "waiting",
         "entry_price": null,
-        "candles_since_formed": 2,
-        "last_candle_time": "2026-05-04T14:29:00+00:00",
-        "score": 0.4
-      },
-      {
-        "symbol": "DOGE/USDT",
-        "timeframe": "1m",
-        "direction": "bearish",
-        "gap_high": 0.11084,
-        "gap_low": 0.11069,
-        "sl_price": 0.11087217,
-        "formed_at": "2026-05-04T13:46:00+00:00",
-        "formed_index": 99,
-        "status": "waiting",
-        "entry_price": null,
-        "candles_since_formed": 10,
-        "last_candle_time": "2026-05-04T14:29:00+00:00",
-        "score": 0.435
+        "candles_since_formed": 5,
+        "last_candle_time": "2026-05-11T09:14:00+00:00",
+        "score": 0.593
       }
     ],
     "LINK/USDT": [
       {
         "symbol": "LINK/USDT",
-        "timeframe": "5m",
+        "timeframe": "1m",
         "direction": "bearish",
-        "gap_high": 9.171,
-        "gap_low": 9.16,
-        "sl_price": 9.1808358,
-        "formed_at": "2026-05-01T04:30:00+00:00",
-        "formed_index": 80,
-        "status": "retested",
+        "gap_high": 10.596,
+        "gap_low": 10.584,
+        "sl_price": 10.6011198,
+        "formed_at": "2026-05-11T05:37:00+00:00",
+        "formed_index": 99,
+        "status": "waiting",
+        "entry_price": null,
+        "candles_since_formed": 17,
+        "last_candle_time": "2026-05-11T06:09:00+00:00",
+        "score": 0.517
+      }
+    ],
+    "ADA/USDT": [],
+    "AVAX/USDT": [],
+    "SUI/USDT": [
+      {
+        "symbol": "SUI/USDT",
+        "timeframe": "1m",
+        "direction": "bearish",
+        "gap_high": 1.2798,
+        "gap_low": 1.274,
+        "sl_price": 1.28465688,
+        "formed_at": "2026-05-11T06:07:00+00:00",
+        "formed_index": 99,
+        "status": "waiting",
         "entry_price": null,
         "candles_since_formed": 2,
-        "last_candle_time": "2026-05-01T06:15:00+00:00",
-        "score": 0.496
+        "last_candle_time": "2026-05-11T06:09:00+00:00",
+        "score": 0.384
+      },
+      {
+        "symbol": "SUI/USDT",
+        "timeframe": "1m",
+        "direction": "bearish",
+        "gap_high": 1.2886,
+        "gap_low": 1.2823,
+        "sl_price": 1.28885772,
+        "formed_at": "2026-05-11T05:56:00+00:00",
+        "formed_index": 88,
+        "status": "waiting",
+        "entry_price": null,
+        "candles_since_formed": 2,
+        "last_candle_time": "2026-05-11T06:09:00+00:00",
+        "score": 0.497
+      },
+      {
+        "symbol": "SUI/USDT",
+        "timeframe": "1m",
+        "direction": "bearish",
+        "gap_high": 1.2871,
+        "gap_low": 1.285,
+        "sl_price": 1.28735742,
+        "formed_at": "2026-05-11T05:46:00+00:00",
+        "formed_index": 99,
+        "status": "waiting",
+        "entry_price": null,
+        "candles_since_formed": 8,
+        "last_candle_time": "2026-05-11T06:09:00+00:00",
+        "score": 0.308
+      }
+    ],
+    "1000PEPE/USDT": [
+      {
+        "symbol": "1000PEPE/USDT",
+        "timeframe": "1m",
+        "direction": "bullish",
+        "gap_high": 0.004336,
+        "gap_low": 0.0043311,
+        "sl_price": 0.00432953392,
+        "formed_at": "2026-05-11T06:09:00+00:00",
+        "formed_index": 99,
+        "status": "waiting",
+        "entry_price": null,
+        "candles_since_formed": 0,
+        "last_candle_time": "2026-05-11T06:09:00+00:00",
+        "score": 0.55
       }
     ]
   },
-  "trades_today": {},
-  "last_trade_date": "2026-05-08"
+  "trades_today": {
+    "AVAX/USDT": 4,
+    "DOGE/USDT": 8,
+    "SUI/USDT": 10,
+    "1000PEPE/USDT": 9,
+    "SOL/USDT": 7,
+    "LINK/USDT": 4,
+    "XRP/USDT": 4,
+    "ADA/USDT": 3,
+    "ETH/USDT": 1,
+    "BNB/USDT": 1
+  },
+  "last_trade_date": "2026-05-11"
 }

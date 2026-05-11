@@ -198,7 +198,18 @@ def find_structure_target(highs: np.ndarray, lows: np.ndarray,
                            direction: str, entry: float,
                            min_rr: float, sl_dist: float,
                            lookback: int = 50) -> float:
-    """Nearest swing high/low beyond min R:R. Falls back to 3R."""
+    """Nearest swing high/low beyond min R:R. Falls back to entry (0R)."""
+    tps = find_all_structure_targets(highs, lows, direction, entry, min_rr, sl_dist, lookback)
+    if tps:
+        return tps[0]
+    return entry  # rr = 0 → guaranteed gate rejection
+
+
+def find_all_structure_targets(highs: np.ndarray, lows: np.ndarray,
+                                direction: str, entry: float,
+                                min_rr: float, sl_dist: float,
+                                lookback: int = 50) -> list[float]:
+    """Return ALL swing pivots beyond min_rr, sorted nearest-to-farthest."""
     h = highs[-lookback:] if len(highs) >= lookback else highs
     l = lows[-lookback:]  if len(lows)  >= lookback else lows
     min_tp = entry + sl_dist * min_rr if direction == "bullish" else entry - sl_dist * min_rr
@@ -212,12 +223,10 @@ def find_structure_target(highs: np.ndarray, lows: np.ndarray,
             if l[j] == l[j-2:j+3].min() and l[j] < min_tp:
                 pivots.append(float(l[j]))
 
-    if pivots:
-        return min(pivots) if direction == "bullish" else max(pivots)
-    # No real swing ≥ min_rr away — return entry so the caller's rr gate
-    # rejects the trade. Backtest proved blind fallback targets degrade
-    # the strategy (PF 1.80 → 1.33). Skip is the right call.
-    return entry  # rr = 0 → guaranteed gate rejection
+    unique = sorted(set(pivots))
+    if direction == "bearish":
+        unique.reverse()
+    return unique
 
 
 # ── Trade record ──────────────────────────────
@@ -634,10 +643,7 @@ class Backtester:
                     if self.tp_mode == "fixed":
                         tp = entry_slip + sl_dist * self.tp_multiplier * sign
                     elif self.tp_mode == "structure":
-                        tp = find_structure_target(
-                            highs[:i], lows[:i],
-                            rf.direction, entry_slip, self.min_rr, sl_dist
-                        )
+                        tp = None  # will be set by multi-pivot search below
                     else:  # trailing | partial — initial 2R target
                         tp = entry_slip + sl_dist * 2.0 * sign
 
@@ -647,17 +653,49 @@ class Backtester:
                     # win/loss ratio meets min_rr.  This guarantees every
                     # accepted trade delivers ≥ min_rr after commissions.
                     #
-                    # Formula:
-                    #   net_win  = qty × tp_dist − round_trip_fees
-                    #   net_loss = qty × sl_dist + round_trip_fees
-                    #   net_rr   = net_win / net_loss  ≥  min_rr
+                    # For structure mode, iterate through ALL swing pivots
+                    # nearest-to-farthest and pick the first one that passes.
 
                     # 1) Compute qty first (needed for fee calc)
                     qty, risk_usdt = self._calc_qty(entry_slip, sl)
                     if qty == 0 or self.balance <= 0:
                         continue
 
-                    if self.tp_mode in ("fixed", "structure"):
+                    if self.tp_mode == "structure":
+                        # Get all pivots and iterate
+                        all_tps = find_all_structure_targets(
+                            highs[:i], lows[:i],
+                            rf.direction, entry_slip, 0.0, sl_dist
+                        )
+
+                        rr_sign = 1 if is_long else -1
+                        notional = qty * entry_slip
+                        entry_fee_est = notional * self.fee_rate
+                        sl_fee_est = qty * sl * self.fee_rate
+                        total_fee_loss = entry_fee_est + sl_fee_est
+
+                        for tp_candidate in all_tps:
+                            tp_dist = (tp_candidate - entry_slip) * rr_sign
+                            if tp_dist <= 0:
+                                continue
+                            exit_fee_est = qty * tp_candidate * self.fee_rate
+                            total_fee_win = entry_fee_est + exit_fee_est
+
+                            net_win  = qty * tp_dist - total_fee_win
+                            net_loss = qty * sl_dist + total_fee_loss
+                            if net_loss <= 0:
+                                net_loss = 0.001
+
+                            net_rr = net_win / net_loss
+                            post_fill_min = self.min_rr * 0.95
+                            if net_rr >= post_fill_min:
+                                tp = tp_candidate
+                                break
+
+                        if tp is None:
+                            continue
+
+                    elif self.tp_mode in ("fixed",):
                         rr_sign  = 1 if is_long else -1
                         tp_dist  = (tp - entry_slip) * rr_sign
                         notional = qty * entry_slip

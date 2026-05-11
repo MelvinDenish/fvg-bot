@@ -448,18 +448,14 @@ class FVGBot:
                 realistic_sl_dist = abs(realistic_entry - fvg.sl_price)
                 if realistic_sl_dist <= 0:
                     continue
-                tp_override = find_structure_tp(
-                    df_primary, fvg.direction, realistic_entry,
-                    realistic_sl_dist, MIN_RR
-                )
-                # NET R:R gate: estimate qty + fees, then check net win/loss ratio
-                sign = 1 if fvg.direction == "bullish" else -1
-                tp_dist_gross = (tp_override - realistic_entry) * sign
-
                 # Estimate position size for fee calculation
-                from order_manager import calculate_position_size
+                balance = self._cached_balance
+                if balance <= 0:
+                    continue
+
+                from order_manager import calculate_position_size, find_structure_tps
                 est_qty, _, _ = calculate_position_size(
-                    self._cached_balance, realistic_entry, fvg.sl_price
+                    balance, realistic_entry, fvg.sl_price
                 )
                 if est_qty <= 0:
                     continue
@@ -467,27 +463,47 @@ class FVGBot:
                 fee_rate = 0.0005  # 0.05% taker
                 notional = est_qty * realistic_entry
                 entry_fee = notional * fee_rate
-                exit_fee_tp = est_qty * tp_override * fee_rate
                 exit_fee_sl = est_qty * fvg.sl_price * fee_rate
-                total_fee_win  = entry_fee + exit_fee_tp
                 total_fee_loss = entry_fee + exit_fee_sl
+                sign = 1 if fvg.direction == "bullish" else -1
 
-                net_win  = est_qty * tp_dist_gross - total_fee_win
-                net_loss = est_qty * realistic_sl_dist + total_fee_loss
-                if net_loss <= 0:
-                    net_loss = 0.001
+                # Get ALL swing pivots sorted nearest-to-farthest
+                all_tps = find_structure_tps(
+                    df_primary, fvg.direction, realistic_entry,
+                    realistic_sl_dist, min_rr=0.0
+                )
 
-                net_rr = net_win / net_loss
-                if net_rr + 1e-6 < MIN_RR:
+                best_net_rr = -999.0
+                for tp_candidate in all_tps:
+                    tp_dist = (tp_candidate - realistic_entry) * sign
+                    if tp_dist <= 0:
+                        continue
+                    exit_fee_tp = est_qty * tp_candidate * fee_rate
+                    total_fee_win = entry_fee + exit_fee_tp
+                    net_win  = est_qty * tp_dist - total_fee_win
+                    net_loss = est_qty * realistic_sl_dist + total_fee_loss
+                    if net_loss <= 0:
+                        net_loss = 0.001
+                    net_rr = net_win / net_loss
+                    best_net_rr = max(best_net_rr, net_rr)
+                    if net_rr + 1e-6 >= MIN_RR:
+                        tp_override = tp_candidate
+                        logger.debug(
+                            f"Structure TP found for {fvg.symbol}: "
+                            f"tp={tp_candidate:.4f}, net_rr={net_rr:.2f}"
+                        )
+                        break
+
+                if tp_override is None:
                     if not getattr(fvg, "_logged_no_target", False):
                         logger.info(
                             f"No structure target ≥ {MIN_RR}R NET for {fvg.symbol} "
-                            f"(net_rr={net_rr:.2f}, price={c_close:.4f}) — will retry"
+                            f"(best_net_rr={best_net_rr:.2f}, price={c_close:.4f}) — will retry"
                         )
                         fvg._logged_no_target = True
                     else:
                         logger.debug(
-                            f"Net R:R {net_rr:.2f} < {MIN_RR} for {fvg.symbol}"
+                            f"Best net R:R {best_net_rr:.2f} < {MIN_RR} for {fvg.symbol}"
                         )
                     continue
 

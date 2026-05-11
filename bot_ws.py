@@ -51,6 +51,7 @@ from order_manager import (
     open_trade, close_trade, execute_partial_close,
     calc_atr, find_structure_tp, Trade,
 )
+from exchange import fetch_positions_safe, get_ticker_price
 from state import save_state, load_state
 from trade_logger import log_trade
 
@@ -93,6 +94,53 @@ def _raw_to_df(raw: list) -> pd.DataFrame:
     df["timestamp"] = pd.to_datetime(df["timestamp"], unit="ms", utc=True)
     df.set_index("timestamp", inplace=True)
     return df.astype(float)
+
+
+def _read_position_size(positions: list, symbol: str) -> float:
+    """Safely extract position size (matches bot.py exactly)."""
+    for p in positions:
+        psym = p.get("symbol", "")
+        if psym == symbol or psym.replace(":USDT", "") == symbol:
+            contracts = p.get("contracts")
+            if contracts is not None:
+                return abs(float(contracts))
+            info = p.get("info", {})
+            pos_amt = info.get("positionAmt")
+            if pos_amt is not None:
+                return abs(float(pos_amt))
+            return 0.0
+    return 0.0
+
+
+async def _cancel_all_for_symbol(exchange, symbol: str, sl_id=None, tp_id=None) -> None:
+    """Cancel ALL orders for a symbol — regular + algo (matches bot.py)."""
+    try:
+        await exchange.cancel_all_orders(symbol)
+    except Exception:
+        pass
+    for oid in (sl_id, tp_id):
+        if not oid:
+            continue
+        try:
+            await exchange.cancel_order(str(oid), symbol)
+        except Exception:
+            pass
+        try:
+            await exchange.fapiPrivateDeleteAlgoOrder({"algoId": str(oid)})
+        except Exception:
+            pass
+    bsym = symbol.replace("/", "")
+    try:
+        algo_orders = await exchange.fapiPrivateGetOpenAlgoOrders()
+        for ao in algo_orders:
+            if ao.get("symbol") == bsym:
+                try:
+                    await exchange.fapiPrivateDeleteAlgoOrder({"algoId": ao["algoId"]})
+                    logger.info(f"Cancelled algo order {ao['algoId']} on {symbol}")
+                except Exception:
+                    pass
+    except Exception:
+        pass
 
 
 # ── Bot class ─────────────────────────────────
@@ -163,6 +211,9 @@ class FVGBotWS:
         """Seed candle buffers and HTF data before opening streams."""
         # Fetch initial balance
         await self._refresh_balance()
+
+        # Reconcile state, clean orphans, verify orders (matches bot.py startup)
+        await self._reconcile_startup()
 
         for symbol in SYMBOLS:
             try:
@@ -360,17 +411,14 @@ class FVGBotWS:
                 realistic_sl_dist = abs(realistic_entry - fvg.sl_price)
                 if realistic_sl_dist <= 0:
                     continue
-                tp_override = find_structure_tp(
-                    df, fvg.direction, realistic_entry,
-                    realistic_sl_dist, MIN_RR
-                )
-                # NET R:R gate: estimate qty + fees, check net win/loss ratio
-                sign = 1 if fvg.direction == "bullish" else -1
-                tp_dist_gross = (tp_override - realistic_entry) * sign
 
-                from order_manager import calculate_position_size
+                balance = self._cached_balance
+                if balance <= 0:
+                    continue
+
+                from order_manager import calculate_position_size, find_structure_tps
                 est_qty, _, _ = calculate_position_size(
-                    self._cached_balance, realistic_entry, fvg.sl_price
+                    balance, realistic_entry, fvg.sl_price
                 )
                 if est_qty <= 0:
                     continue
@@ -378,27 +426,47 @@ class FVGBotWS:
                 fee_rate = 0.0005  # 0.05% taker
                 notional = est_qty * realistic_entry
                 entry_fee = notional * fee_rate
-                exit_fee_tp = est_qty * tp_override * fee_rate
                 exit_fee_sl = est_qty * fvg.sl_price * fee_rate
-                total_fee_win  = entry_fee + exit_fee_tp
                 total_fee_loss = entry_fee + exit_fee_sl
+                sign = 1 if fvg.direction == "bullish" else -1
 
-                net_win  = est_qty * tp_dist_gross - total_fee_win
-                net_loss = est_qty * realistic_sl_dist + total_fee_loss
-                if net_loss <= 0:
-                    net_loss = 0.001
+                # Get ALL swing pivots sorted nearest-to-farthest
+                all_tps = find_structure_tps(
+                    df, fvg.direction, realistic_entry,
+                    realistic_sl_dist, min_rr=0.0
+                )
 
-                net_rr = net_win / net_loss
-                if net_rr + 1e-6 < MIN_RR:
+                best_net_rr = -999.0
+                for tp_candidate in all_tps:
+                    tp_dist = (tp_candidate - realistic_entry) * sign
+                    if tp_dist <= 0:
+                        continue
+                    exit_fee_tp = est_qty * tp_candidate * fee_rate
+                    total_fee_win = entry_fee + exit_fee_tp
+                    net_win  = est_qty * tp_dist - total_fee_win
+                    net_loss = est_qty * realistic_sl_dist + total_fee_loss
+                    if net_loss <= 0:
+                        net_loss = 0.001
+                    net_rr = net_win / net_loss
+                    best_net_rr = max(best_net_rr, net_rr)
+                    if net_rr + 1e-6 >= MIN_RR:
+                        tp_override = tp_candidate
+                        logger.debug(
+                            f"Structure TP found for {fvg.symbol}: "
+                            f"tp={tp_candidate:.4f}, net_rr={net_rr:.2f}"
+                        )
+                        break
+
+                if tp_override is None:
                     if not getattr(fvg, "_logged_no_target", False):
                         logger.info(
                             f"No structure target ≥ {MIN_RR}R NET for {fvg.symbol} "
-                            f"(net_rr={net_rr:.2f}, price={c_close:.4f}) — will retry"
+                            f"(best_net_rr={best_net_rr:.2f}, price={c_close:.4f}) — will retry"
                         )
                         fvg._logged_no_target = True
                     else:
                         logger.debug(
-                            f"Net R:R {net_rr:.2f} < {MIN_RR} for {fvg.symbol}"
+                            f"Best net R:R {best_net_rr:.2f} < {MIN_RR} for {fvg.symbol}"
                         )
                     continue
 
@@ -436,7 +504,7 @@ class FVGBotWS:
                 )
                 break
 
-    # ── Trade management (matches bot.py _manage_open_trades) ──
+    # ── Trade management (matches bot.py manage_open_trades exactly) ──
     async def _manage_trades(self, symbol: str,
                               df: pd.DataFrame, atr: float) -> None:
         still_open = []
@@ -446,6 +514,18 @@ class FVGBotWS:
                 still_open.append(trade)
                 continue
 
+            # STRUCTURE mode: poll exchange orders (matches bot.py exactly)
+            if TP_MODE == "structure":
+                exit_info = await self._poll_exit(trade, df)
+                if exit_info is not None:
+                    actual_exit, reason = exit_info
+                    self._mark_closed(trade, actual_exit, reason)
+                    self.closed_trades.append(trade)
+                    continue
+                still_open.append(trade)
+                continue
+
+            # PARTIAL mode: candle-based management
             latest  = df.iloc[-1]
             c_high  = float(latest["high"])
             c_low   = float(latest["low"])
@@ -457,111 +537,334 @@ class FVGBotWS:
                 still_open.append(trade)
                 continue
 
-            # TP mode: structure = direct SL/TP exit, no BE/trail
-            if TP_MODE == "structure":
-                tp_final = trade.tp_prices[0]
-                sl_hit = (is_long  and c_low  <= trade.sl_price) or \
-                         (not is_long and c_high >= trade.sl_price)
-                tp_hit = (is_long  and c_high >= tp_final) or \
-                         (not is_long and c_low  <= tp_final)
+            profit_r = (
+                (c_close - trade.entry_price) / sl_dist if is_long
+                else (trade.entry_price - c_close) / sl_dist
+            )
 
-                if sl_hit and tp_hit:
-                    sl_hit, tp_hit = True, False  # conservative
-
-                if sl_hit:
-                    trade = close_trade(self.exchange, trade, trade.sl_price,
-                                        "stop_loss", dry_run=DRY_RUN)
-                    self.closed_trades.append(trade)
-                    log_trade(trade)
-                    # Set cooldown (matches bot.py)
-                    self._entry_cooldown[symbol] = (
-                        datetime.now(timezone.utc) + timedelta(seconds=300)
-                    )
-                    logger.info(f"{symbol} cooldown: no re-entry for 300s")
-                    continue
-
-                if tp_hit:
-                    trade = close_trade(self.exchange, trade, tp_final,
-                                        "take_profit_structure", dry_run=DRY_RUN)
-                    self.closed_trades.append(trade)
-                    log_trade(trade)
-                    continue
-
-            else:
-                # Partial TP mode with BE/trail (matches bot.py)
-                profit_r = (
-                    (c_close - trade.entry_price) / sl_dist if is_long
-                    else (trade.entry_price - c_close) / sl_dist
+            if profit_r >= 1.0 and not trade.be_moved:
+                be = trade.entry_price
+                trade.current_sl = (
+                    max(trade.current_sl, be) if is_long
+                    else min(trade.current_sl, be)
                 )
+                trade.be_moved = True
+                logger.info(f"[BE] {symbol} SL → breakeven {be:.4f}")
 
-                # Breakeven at 1R
-                if profit_r >= 1.0 and not trade.be_moved:
-                    be = trade.entry_price
-                    trade.current_sl = (
-                        max(trade.current_sl, be) if is_long
-                        else min(trade.current_sl, be)
-                    )
-                    trade.be_moved = True
-                    logger.info(f"[BE] {symbol} SL → breakeven {be:.4f}")
+            if profit_r >= 1.5:
+                if is_long:
+                    new_trail = c_low - atr * TRAIL_ATR_MULT
+                    if new_trail > trade.current_sl:
+                        trade.current_sl = new_trail
+                else:
+                    new_trail = c_high + atr * TRAIL_ATR_MULT
+                    if new_trail < trade.current_sl:
+                        trade.current_sl = new_trail
 
-                # ATR trail at 1.5R
-                if profit_r >= 1.5:
-                    if is_long:
-                        new_trail = c_low - atr * TRAIL_ATR_MULT
-                        if new_trail > trade.current_sl:
-                            trade.current_sl = new_trail
-                    else:
-                        new_trail = c_high + atr * TRAIL_ATR_MULT
-                        if new_trail < trade.current_sl:
-                            trade.current_sl = new_trail
+            tp1 = trade.tp_prices[0]
+            partial_hit = (is_long and c_high >= tp1) or \
+                          (not is_long and c_low <= tp1)
+            if partial_hit and not trade.partial_done:
+                execute_partial_close(self.exchange, trade, tp1, dry_run=DRY_RUN)
+                struct_tp = find_structure_tp(
+                    df, "bullish" if is_long else "bearish",
+                    trade.entry_price, sl_dist, MIN_RR
+                )
+                trade.tp_prices = [struct_tp]
 
-                # Partial exit at TP1 (2R)
-                tp1         = trade.tp_prices[0]
-                partial_hit = (is_long and c_high >= tp1) or \
-                              (not is_long and c_low <= tp1)
+            active_sl = trade.current_sl
+            tp_final  = trade.tp_prices[0]
+            sl_hit    = (is_long  and c_low  <= active_sl) or \
+                        (not is_long and c_high >= active_sl)
+            tp_hit    = (is_long  and c_high >= tp_final)  or \
+                        (not is_long and c_low  <= tp_final)
 
-                if partial_hit and not trade.partial_done:
-                    execute_partial_close(self.exchange, trade, tp1, dry_run=DRY_RUN)
-                    struct_tp = find_structure_tp(
-                        df, "bullish" if is_long else "bearish",
-                        trade.entry_price, sl_dist, MIN_RR
-                    )
-                    trade.tp_prices = [struct_tp]
-                    logger.info(f"[PARTIAL] TP extended to structure {struct_tp:.4f}")
+            if sl_hit and tp_hit:
+                sl_hit, tp_hit = True, False
 
-                # SL / TP check
-                active_sl = trade.current_sl
-                tp_final  = trade.tp_prices[0]
-                sl_hit    = (is_long  and c_low  <= active_sl) or \
-                            (not is_long and c_high >= active_sl)
-                tp_hit    = (is_long  and c_high >= tp_final)  or \
-                            (not is_long and c_low  <= tp_final)
+            if sl_hit:
+                reason = "trailing_sl" if trade.be_moved else "stop_loss"
+                trade  = close_trade(self.exchange, trade, active_sl, reason,
+                                     dry_run=DRY_RUN)
+                self.closed_trades.append(trade)
+                log_trade(trade)
+                self._entry_cooldown[symbol] = (
+                    datetime.now(timezone.utc) + timedelta(seconds=300)
+                )
+                logger.info(f"{symbol} cooldown: no re-entry for 300s")
+                continue
 
-                if sl_hit and tp_hit:
-                    sl_hit, tp_hit = True, False
-
-                if sl_hit:
-                    reason = "trailing_sl" if trade.be_moved else "stop_loss"
-                    trade  = close_trade(self.exchange, trade, active_sl, reason,
-                                         dry_run=DRY_RUN)
-                    self.closed_trades.append(trade)
-                    log_trade(trade)
-                    self._entry_cooldown[symbol] = (
-                        datetime.now(timezone.utc) + timedelta(seconds=300)
-                    )
-                    logger.info(f"{symbol} cooldown: no re-entry for 300s")
-                    continue
-
-                if tp_hit:
-                    trade = close_trade(self.exchange, trade, tp_final,
-                                        "take_profit_structure", dry_run=DRY_RUN)
-                    self.closed_trades.append(trade)
-                    log_trade(trade)
-                    continue
+            if tp_hit:
+                trade = close_trade(self.exchange, trade, tp_final,
+                                    "take_profit_structure", dry_run=DRY_RUN)
+                self.closed_trades.append(trade)
+                log_trade(trade)
+                continue
 
             still_open.append(trade)
 
         self.open_trades = still_open
+
+    # ── Exchange-aware exit polling (matches bot.py _poll_exit) ──
+    async def _poll_exit(self, trade: Trade, df: pd.DataFrame = None):
+        """Check exchange order fills, software failsafe, position size."""
+        current_price = 0.0
+        if df is not None and not df.empty:
+            current_price = float(df["close"].iloc[-1])
+        else:
+            current_price = get_ticker_price(self.exchange, trade.symbol)
+
+        tp_filled_by_order, sl_filled_by_order = False, False
+        order_fill_price = None
+        sl_order_alive, tp_order_alive = False, False
+
+        # Check TP order
+        if trade.tp_order_id:
+            try:
+                o = await self.exchange.fetch_order(trade.tp_order_id, trade.symbol)
+                status = o.get("status")
+                if status in ("closed", "filled") or \
+                   float(o.get("filled") or 0) >= trade.qty * 0.5:
+                    tp_filled_by_order = True
+                    order_fill_price = float(
+                        o.get("average") or o.get("price") or trade.tp_prices[0])
+                    logger.info(f"TP order FILLED for {trade.symbol} @ {order_fill_price:.4f}")
+                elif status == "open":
+                    tp_order_alive = True
+            except Exception as e:
+                err_msg = str(e).lower()
+                if "-2013" not in err_msg and "does not exist" not in err_msg:
+                    logger.debug(f"fetch_order(tp) for {trade.symbol}: {e}")
+
+        # Check SL order
+        if not tp_filled_by_order and trade.sl_order_id:
+            try:
+                o = await self.exchange.fetch_order(trade.sl_order_id, trade.symbol)
+                status = o.get("status")
+                if status in ("closed", "filled") or \
+                   float(o.get("filled") or 0) >= trade.qty * 0.5:
+                    sl_filled_by_order = True
+                    order_fill_price = float(
+                        o.get("average") or o.get("price") or trade.sl_price)
+                    logger.info(f"SL order FILLED for {trade.symbol} @ {order_fill_price:.4f}")
+                elif status == "open":
+                    sl_order_alive = True
+            except Exception as e:
+                err_msg = str(e).lower()
+                if "-2013" not in err_msg and "does not exist" not in err_msg:
+                    logger.debug(f"fetch_order(sl) for {trade.symbol}: {e}")
+
+        if tp_filled_by_order or sl_filled_by_order:
+            await _cancel_all_for_symbol(
+                self.exchange, trade.symbol,
+                sl_id=trade.sl_order_id, tp_id=trade.tp_order_id
+            )
+            logger.info(f"Cleanup done for {trade.symbol} (order fill detected)")
+            reason = "take_profit_structure" if tp_filled_by_order else "stop_loss"
+            return float(order_fill_price), reason
+
+        # Software SL/TP failsafe (only if exchange orders are missing)
+        if current_price > 0 and not (sl_order_alive and tp_order_alive):
+            sl_breached = (
+                (trade.direction == "long"  and current_price <= trade.sl_price) or
+                (trade.direction == "short" and current_price >= trade.sl_price)
+            )
+            tp_breached = (
+                (trade.direction == "long"  and current_price >= trade.tp_prices[0]) or
+                (trade.direction == "short" and current_price <= trade.tp_prices[0])
+            ) if trade.tp_prices else False
+
+            if sl_breached or tp_breached:
+                order_missing = (sl_breached and not sl_order_alive) or \
+                                (tp_breached and not tp_order_alive)
+                if order_missing:
+                    reason = "software_sl" if sl_breached else "software_tp"
+                    level = trade.sl_price if sl_breached else trade.tp_prices[0]
+                    logger.warning(
+                        f"SOFTWARE {'SL' if sl_breached else 'TP'} TRIGGERED for "
+                        f"{trade.symbol}: price {current_price:.4f} breached "
+                        f"{'SL' if sl_breached else 'TP'} {level:.4f} "
+                        f"(exchange order MISSING). Market-closing now."
+                    )
+                    try:
+                        await self.exchange.cancel_all_orders(trade.symbol)
+                    except Exception:
+                        pass
+                    close_side = "sell" if trade.direction == "long" else "buy"
+                    try:
+                        close_order = await self.exchange.create_order(
+                            symbol=trade.symbol, type="market",
+                            side=close_side, amount=trade.qty_remaining,
+                            params={"reduceOnly": True}
+                        )
+                        fill = float(
+                            close_order.get("average")
+                            or close_order.get("price")
+                            or current_price
+                        )
+                        return fill, reason
+                    except Exception as e:
+                        logger.warning(f"Software {reason} market close failed: {e}")
+
+        # Position-based fallback
+        try:
+            positions = fetch_positions_safe(self.exchange, trade.symbol)
+            pos_size = _read_position_size(positions, trade.symbol)
+        except Exception:
+            return None
+
+        if pos_size < trade.qty * 0.01:
+            await _cancel_all_for_symbol(
+                self.exchange, trade.symbol,
+                sl_id=trade.sl_order_id, tp_id=trade.tp_order_id
+            )
+            logger.info(f"Cleanup done for {trade.symbol} (position closed)")
+            fill = current_price if current_price > 0 else trade.sl_price
+            if current_price > 0:
+                tp_dist = abs(current_price - trade.tp_prices[0])
+                sl_dist = abs(current_price - trade.sl_price)
+                tp_filled = tp_dist < sl_dist
+                logger.warning(
+                    f"Position {trade.symbol} closed, orders gone. "
+                    f"Using market price {fill:.4f} as exit estimate."
+                )
+            else:
+                tp_filled = False
+            reason = "take_profit_structure" if tp_filled else "stop_loss"
+            return float(fill), reason
+
+        return None
+
+    def _mark_closed(self, trade: Trade, actual_exit: float, reason: str) -> None:
+        """Update Trade fields and log exit (matches bot.py exactly)."""
+        sign = 1 if trade.direction == "long" else -1
+        leg_pnl = (actual_exit - trade.entry_price) * trade.qty * sign
+        trade.exit_price   = actual_exit
+        trade.close_reason = reason
+        trade.closed_at    = datetime.now(timezone.utc)
+        trade.status       = "closed"
+        trade.pnl_usdt     = round(leg_pnl + trade.partial_pnl, 4)
+        trade.pnl_pct      = round(
+            trade.pnl_usdt / trade.risk_amount * 100 if trade.risk_amount else 0, 2)
+        rr = trade.rr_achieved
+        logger.info(
+            f"CLOSED {trade.symbol} {trade.direction.upper()} | "
+            f"reason={reason} | exit={actual_exit:.4f} | "
+            f"P&L=${trade.pnl_usdt:.2f} ({trade.pnl_pct:.1f}% of risk)"
+            + (f" | R:R={rr:.2f}x" if rr is not None else "")
+        )
+        if reason in ("stop_loss", "software_sl"):
+            self._entry_cooldown[trade.symbol] = (
+                datetime.now(timezone.utc) + timedelta(seconds=300)
+            )
+            logger.info(f"{trade.symbol} cooldown: no re-entry for 300s")
+        try:
+            log_trade(trade)
+        except Exception:
+            pass
+
+    # ── Startup reconciliation (matches bot.py) ──
+    async def _reconcile_startup(self) -> None:
+        """Reconcile state, clean orphans, verify orders on boot."""
+        # 1. Reconcile stale trades
+        kept = []
+        for trade in self.open_trades:
+            try:
+                positions = fetch_positions_safe(self.exchange, trade.symbol)
+                pos_size = _read_position_size(positions, trade.symbol)
+            except Exception:
+                kept.append(trade)
+                continue
+            if pos_size >= trade.qty * 0.5:
+                kept.append(trade)
+            else:
+                trade.status = "closed"
+                trade.close_reason = "stale_recovered"
+                trade.exit_price = trade.entry_price
+                trade.pnl_usdt = 0.0
+                trade.closed_at = datetime.now(timezone.utc)
+                self.closed_trades.append(trade)
+                for oid in (trade.sl_order_id, trade.tp_order_id):
+                    if oid:
+                        try:
+                            await self.exchange.cancel_order(str(oid), trade.symbol)
+                        except Exception:
+                            pass
+                logger.info(f"Reconciled stale trade: {trade.symbol}")
+        self.open_trades = kept
+
+        # 2. Close orphan positions
+        tracked_symbols = {t.symbol for t in self.open_trades}
+        for sym in SYMBOLS:
+            try:
+                positions = fetch_positions_safe(self.exchange, sym)
+                for pos in positions:
+                    psym = pos.get("symbol", "")
+                    clean_sym = psym.split(":")[0] if ":" in psym else psym
+                    contracts = pos.get("contracts")
+                    amt = abs(float(contracts)) if contracts is not None else 0.0
+                    if amt == 0 or clean_sym in tracked_symbols:
+                        continue
+                    side = pos.get("side")
+                    close_side = "sell" if side == "long" else "buy"
+                    logger.warning(f"ORPHAN POSITION: {clean_sym} {side} qty={amt}")
+                    try:
+                        await self.exchange.create_order(
+                            symbol=clean_sym, type="market", side=close_side,
+                            amount=amt, params={"reduceOnly": True}
+                        )
+                        await _cancel_all_for_symbol(self.exchange, clean_sym)
+                    except Exception as e:
+                        logger.error(f"Failed to close orphan {clean_sym}: {e}")
+            except Exception:
+                pass
+
+        # 3. Verify SL/TP orders for open trades
+        for trade in self.open_trades:
+            sl_side = "sell" if trade.direction == "long" else "buy"
+            sl_ok = False
+            if trade.sl_order_id:
+                try:
+                    o = await self.exchange.fetch_order(str(trade.sl_order_id), trade.symbol)
+                    sl_ok = o.get("status") == "open"
+                except Exception:
+                    pass
+            if not sl_ok:
+                await _cancel_all_for_symbol(self.exchange, trade.symbol)
+                logger.warning(f"SL order missing for {trade.symbol} — re-placing stop_market @ {trade.sl_price:.6f}")
+                try:
+                    sl_order = await self.exchange.create_order(
+                        symbol=trade.symbol, type="stop_market",
+                        side=sl_side, amount=trade.qty_remaining,
+                        params={"stopPrice": trade.sl_price, "reduceOnly": True}
+                    )
+                    trade.sl_order_id = sl_order["id"]
+                except Exception as e:
+                    logger.error(f"Failed to re-place SL for {trade.symbol}: {e}")
+
+            tp_ok = False
+            if trade.tp_order_id:
+                try:
+                    o = await self.exchange.fetch_order(str(trade.tp_order_id), trade.symbol)
+                    tp_ok = o.get("status") == "open"
+                except Exception:
+                    pass
+            if not tp_ok and trade.tp_prices:
+                tp_price = trade.tp_prices[0]
+                logger.warning(f"TP order missing for {trade.symbol} — re-placing limit @ {tp_price:.6f}")
+                try:
+                    tp_order = await self.exchange.create_order(
+                        symbol=trade.symbol, type="limit",
+                        side=sl_side, amount=trade.qty_remaining,
+                        price=tp_price, params={"reduceOnly": True}
+                    )
+                    trade.tp_order_id = tp_order["id"]
+                except Exception as e:
+                    logger.error(f"Failed to re-place TP for {trade.symbol}: {e}")
+
+        if self.open_trades:
+            save_state(STATE_FILE, self.open_trades, self.active_fvgs,
+                       self.trades_today, self.last_trade_date)
 
     # ── Per-symbol WebSocket loop ─────────────
     async def _watch_symbol(self, symbol: str) -> None:
